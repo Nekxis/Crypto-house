@@ -18,11 +18,10 @@ import {HamburgerIcon} from "@chakra-ui/icons";
 const MenuDrawer = () => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const btnRef = React.useRef<any>()
-    console.log(btnRef)
 
     return (
         <>
-            <Button bg='green.400' ref={btnRef} colorScheme='teal' onClick={onOpen}>
+            <Button bg='purple.500' ref={btnRef} colorScheme='teal' onClick={onOpen}>
                 <HamburgerIcon boxSize='8'/>
             </Button>
             <Drawer

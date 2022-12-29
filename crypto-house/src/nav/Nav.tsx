@@ -10,7 +10,7 @@ const Nav = () => {
             </Center>
             <Spacer/>
             <Center w='30rem'>
-                <Text color='green.400' fontSize='5xl' fontWeight='700'>Recipe app</Text>
+                <Text color='purple.500' fontSize='5xl' fontWeight='700'>Crypto House</Text>
             </Center>
             <Spacer/>
             <Center w='7rem'>
