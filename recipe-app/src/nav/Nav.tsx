@@ -1,6 +1,6 @@
 import {Flex, Center, Text, Spacer, Avatar} from '@chakra-ui/react'
-import {HamburgerIcon} from '@chakra-ui/icons'
 import React from "react";
+import MenuDrawer from "../menuDrawer/MenuDrawer";
 
 const Nav = () => {
     return (
@@ -14,7 +14,7 @@ const Nav = () => {
             </Center>
             <Spacer/>
             <Center w='7rem'>
-                <Text fontSize='xl'><HamburgerIcon boxSize='8'/></Text>
+                <Text fontSize='xl'><MenuDrawer /></Text>
             </Center>
         </Flex>
     )
