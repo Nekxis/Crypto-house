@@ -8,6 +8,7 @@ export type FetchStatsQuery = {
         total24hVolume:  string,
         btcDominance: number,
         bestCoins: bestCoin[]
+        newestCoins: bestCoin[]
     },
 
 }
@@ -19,3 +20,5 @@ type bestCoin = {
     iconUrl: string,
     coinrankingUrl: string
 }
+
+
