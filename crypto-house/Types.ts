@@ -1,19 +1,23 @@
 export type FetchStatsQuery = {
     status: string,
     data: {
-        totalCoins: number,
-        totalMarkets: number,
-        totalExchanges: number,
-        totalMarketCap: string,
-        total24hVolume:  string,
-        btcDominance: number,
-        bestCoins: bestCoin[]
-        newestCoins: bestCoin[]
+        stats: stats
+        coins: coin[]
+
     },
 
 }
 
-type bestCoin = {
+type stats = {
+    total: number
+    totalCoins: number,
+    totalMarkets: number,
+    totalExchanges: number,
+    totalMarketCap: string,
+    total24hVolume: string,
+}
+
+type coin = {
     uuid: string,
     symbol: string,
     name: string,
