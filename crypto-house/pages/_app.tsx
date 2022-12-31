@@ -7,9 +7,9 @@ import {coinApi} from "../store";
 export default function App({ Component, pageProps }: AppProps) {
   return(
       <ApiProvider api={coinApi}>
-      <ChakraProvider>
-        <Component {...pageProps} />
-      </ChakraProvider>
+        <ChakraProvider>
+            <Component {...pageProps} />
+        </ChakraProvider>
       </ApiProvider>
   )
 

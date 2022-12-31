@@ -8,7 +8,7 @@ export const coinApi = createApi({
             baseUrl: 'https://api.coinranking.com/v2/',
         }),
     endpoints: (builder) => ({
-        getStatsByName: builder.query<FetchStatsQuery, void>({query: () => 'stats',})
+        getStatsByName: builder.query<FetchStatsQuery, void>({query: () => 'coins',})
     }),
 })
 
