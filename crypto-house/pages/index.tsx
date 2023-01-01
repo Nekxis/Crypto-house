@@ -16,8 +16,8 @@ export default function Home() {
                 <Heading size='lg' py='2'>Top Crypto</Heading>
             <SimpleGrid columns={2} spacing={5}>
                 <>
-                {data?.data.coins.map(({uuid,symbol,name,iconUrl,price}) => {
-                   return <CardComponent key={uuid} uuid={uuid} symbol={symbol} name={name} iconUrl={iconUrl} price={price}/>
+                {data?.data.coins.map(({uuid,symbol,name,iconUrl,price,change,sparkline}) => {
+                   return <CardComponent key={uuid} uuid={uuid} symbol={symbol} name={name} iconUrl={iconUrl} price={price} change={change} sparkline={sparkline}/>
                 })}
                 </>
             </SimpleGrid>

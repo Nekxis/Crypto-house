@@ -23,6 +23,8 @@ type coin = {
     name: string,
     iconUrl: string,
     price: string,
+    change: string,
+    sparkline: string[]
 }
 
 

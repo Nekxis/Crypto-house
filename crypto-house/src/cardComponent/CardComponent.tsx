@@ -13,12 +13,12 @@ import {
     SimpleGrid,
     Center,
 } from '@chakra-ui/react'
-import { Sparklines, SparklinesBars } from 'react-sparklines';
+// @ts-ignore
+import {Sparklines, SparklinesBars, SparklinesLine} from 'react-sparklines';
 
 
-
-const CardComponent: React.FC<{ uuid: string, symbol: string, name: string, iconUrl: string, price: string }> = (props) => {
-    const {uuid, symbol, name, iconUrl, price} = props
+const CardComponent: React.FC<{ uuid: string, symbol: string, name: string, iconUrl: string, price: string, change: string, sparkline: string[] }> = (props) => {
+    const {uuid, symbol, name, iconUrl, price, change, sparkline} = props
     const toast = useToast()
 
     function ParseFloat(price: string) {
@@ -37,12 +37,17 @@ const CardComponent: React.FC<{ uuid: string, symbol: string, name: string, icon
                         </Center>
                     </Flex>
                     <Center>
-                        <Heading size='sm' ml={2}> {ParseFloat(price)} </Heading>
+                        <Heading size='sm'> {ParseFloat(price)} </Heading>
                     </Center>
+
                     <Flex>
-                        <Sparklines data={sampleData}>
-                            <SparklinesBars style={{ stroke: "white", fill: "#41c3f9", fillOpacity: ".25" }} />
-                            <SparklinesLine style={{ stroke: "#41c3f9", fill: "none" }} />
+                        <Center mx='3'>
+                            <Heading size='xs'> {change} </Heading>
+                        </Center>
+                        <Spacer/>
+                        <Sparklines data={sparkline}>
+                            <SparklinesBars style={{stroke: "white", fill: "#41c3f9", fillOpacity: ".25"}}/>
+                            <SparklinesLine style={{stroke: "#41c3f9", fill: "none"}}/>
                         </Sparklines>
                     </Flex>
                 </SimpleGrid>
@@ -51,7 +56,7 @@ const CardComponent: React.FC<{ uuid: string, symbol: string, name: string, icon
                 <Flex>
                     <Text>{symbol}</Text>
                     <Spacer/>
-                    <Button onClick={() => {
+                    <Button size='sm' onClick={() => {
                         navigator.clipboard.writeText(uuid),
                             toast({
                                 title: `Successfully copied!`,
