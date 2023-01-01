@@ -22,7 +22,7 @@ type coin = {
     symbol: string,
     name: string,
     iconUrl: string,
-    coinrankingUrl: string
+    price: string,
 }
 
 
