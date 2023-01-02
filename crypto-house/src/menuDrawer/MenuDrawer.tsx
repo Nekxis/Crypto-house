@@ -9,7 +9,8 @@ import {
     DrawerCloseButton,
     Button,
     Input,
-    useDisclosure
+
+    useDisclosure, Heading, Divider
 } from '@chakra-ui/react'
 import {HamburgerIcon} from "@chakra-ui/icons";
 
@@ -36,7 +37,8 @@ const MenuDrawer = () => {
                     <DrawerHeader>Menu</DrawerHeader>
 
                     <DrawerBody>
-                        <Input placeholder='Type here...' />
+                        <Heading size='sm' py={1}>Home</Heading>
+                        <Divider />
                     </DrawerBody>
 
                     <DrawerFooter>

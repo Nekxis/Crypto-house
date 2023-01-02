@@ -46,8 +46,8 @@ const CardComponent: React.FC<{ uuid: string, symbol: string, name: string, icon
                         </Center>
                         <Spacer/>
                         <Sparklines data={sparkline}>
-                            <SparklinesBars style={{stroke: "white", fill: "#41c3f9", fillOpacity: ".25"}}/>
-                            <SparklinesLine style={{stroke: "#41c3f9", fill: "none"}}/>
+                            <SparklinesBars style={{stroke: "white", fill: "#805AD5", fillOpacity: ".25"}}/>
+                            <SparklinesLine style={{stroke: "#805AD5", fill: "none"}}/>
                         </Sparklines>
                     </Flex>
                 </SimpleGrid>

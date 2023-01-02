@@ -5,7 +5,7 @@ export const coinApi = createApi({
     reducerPath: 'coinApi',
     baseQuery: fetchBaseQuery(
         {
-            baseUrl: 'https://api.coinranking.com/v2/',
+            baseUrl: 'https://api.coinranking.com/v2/'
         }),
     endpoints: (builder) => ({
         getStatsByName: builder.query<FetchStatsQuery, void>({query: () => 'coins',})
