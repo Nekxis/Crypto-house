@@ -10,7 +10,6 @@ export default function Home() {
 
     return (
         <>
-            {/*{JSON.stringify(data)}*/}
             <Nav/>
             <Box m='1rem'>
                 <Heading size='lg' py='2'>Top Crypto</Heading>

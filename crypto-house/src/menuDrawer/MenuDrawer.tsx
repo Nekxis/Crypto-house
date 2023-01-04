@@ -37,16 +37,9 @@ const MenuDrawer = () => {
                     <DrawerHeader>Menu</DrawerHeader>
 
                     <DrawerBody>
-                        <Heading size='sm' py={1}>Home</Heading>
+                        <Button variant='ghost' w='100%' justifyContent='left' size='sm' py={1} my={1}>Home</Button>
                         <Divider />
                     </DrawerBody>
-
-                    <DrawerFooter>
-                        <Button variant='outline' mr={3} onClick={onClose}>
-                            Cancel
-                        </Button>
-                        <Button colorScheme='blue'>Save</Button>
-                    </DrawerFooter>
                 </DrawerContent>
             </Drawer>
         </>
