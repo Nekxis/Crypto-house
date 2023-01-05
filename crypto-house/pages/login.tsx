@@ -23,12 +23,14 @@ import { useDispatch } from 'react-redux';
 import { login } from '../store/userSlice';
 import { GitHubIcon } from "../src/loginComponents/IconProvider";
 import { PasswordField } from "../src/loginComponents/PasswordField";
+import {useRouter} from "next/navigation";
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const dispatch = useDispatch();
-    const loginToApp = (e) => {
+    const router = useRouter()
+    const loginToApp = (e:React.FormEvent) => {
         e.preventDefault();
 
         signInWithEmailAndPassword(auth, email, password)
@@ -36,11 +38,11 @@ const Login = () => {
                 login({
                     email: userAuth.user.email,
                     uid: userAuth.user.uid,
-                    displayName: userAuth.user.displayName,
-                    photoUrl: userAuth.user.photoURL,
                 })
 
             );
+                console.log(userAuth)
+                router.push('/')
             })
             .catch((err) => {
                 alert(err);

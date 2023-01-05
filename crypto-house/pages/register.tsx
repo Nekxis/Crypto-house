@@ -23,14 +23,16 @@ import { useDispatch } from 'react-redux';
 import { login } from '../store/userSlice';
 import { PasswordField } from "../src/loginComponents/PasswordField";
 import {GitHubIcon} from "../src/loginComponents/IconProvider";
+import {useRouter} from "next/navigation";
 
 
 const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const dispatch = useDispatch();
+    const router = useRouter()
 
-    const register = (e) => {
+    const register = (e:React.FormEvent) => {
         e.preventDefault()
         createUserWithEmailAndPassword(auth, email, password)
             .then((userAuth) => {
@@ -40,7 +42,7 @@ const Register = () => {
                                 uid: userAuth.user.uid,
                             })
                     )
-                console.log(auth)
+                router.push('/')
             })
             .catch((err) => {
                 alert(err);

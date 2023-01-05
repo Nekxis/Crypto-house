@@ -1,23 +1,16 @@
-import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
+
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from ".//userSlice"
-import {FetchStatsQuery} from "../Types";
+import {userSlice} from "./userSlice"
+import {coinApi} from "./apiSlice";
 
 export const store = configureStore({
     reducer: {
-        user: userReducer,
+        user: userSlice.reducer,
+        [coinApi.reducerPath]: coinApi.reducer
     },
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(coinApi.middleware),
 });
 
-export const coinApi = createApi({
-    reducerPath: 'coinApi',
-    baseQuery: fetchBaseQuery(
-        {
-            baseUrl: 'https://api.coinranking.com/v2/'
-        }),
-    endpoints: (builder) => ({
-        getStatsByName: builder.query<FetchStatsQuery, void>({query: () => 'coins',})
-    }),
-})
 
-export const { useGetStatsByNameQuery } = coinApi
+export type RootState = ReturnType<typeof store.getState>
