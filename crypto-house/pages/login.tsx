@@ -14,11 +14,42 @@ import {
     useColorModeValue,
     VisuallyHidden,
 } from '@chakra-ui/react'
-import * as React from 'react'
+import React, { useState } from 'react';
+import {
+    auth,
+    signInWithEmailAndPassword,
+} from '../firebase/clientApp';
+import { useDispatch } from 'react-redux';
+import { login } from '../store/userSlice';
 import { GitHubIcon } from "../src/loginComponents/IconProvider";
 import { PasswordField } from "../src/loginComponents/PasswordField";
 
-export const login = () => (
+const Login = () => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const dispatch = useDispatch();
+    const loginToApp = (e) => {
+        e.preventDefault();
+
+        signInWithEmailAndPassword(auth, email, password)
+            .then((userAuth) => { dispatch(
+                login({
+                    email: userAuth.user.email,
+                    uid: userAuth.user.uid,
+                    displayName: userAuth.user.displayName,
+                    photoUrl: userAuth.user.photoURL,
+                })
+
+            );
+            })
+            .catch((err) => {
+                alert(err);
+            });
+
+    };
+
+    return(
+
     <Container maxW="lg" h='100vh' display='flex' py={{ base: '12', md: '24' }} px={{ base: '0', sm: '8' }}>
         <Stack w='100%' spacing="8" alignSelf='center'>
             <Stack spacing="6">
@@ -48,10 +79,10 @@ export const login = () => (
                     <Stack spacing="5">
                         <FormControl>
                             <FormLabel htmlFor="email">Email</FormLabel>
-                            <Input id="email" type="email" />
+                            <Input  value={email} onChange={(e) => setEmail(e.target.value)} id="email" type="email" />
                         </FormControl>
                         <FormLabel htmlFor="password">Password</FormLabel>
-                        <PasswordField />
+                        <PasswordField value={password} onChange={(e) => setPassword(e.target.value)} />
                     </Stack>
                     <HStack justify="space-between">
                         <Spacer />
@@ -60,7 +91,7 @@ export const login = () => (
                         </Button>
                     </HStack>
                     <Stack spacing="6">
-                        <Button variant='solid' bg='purple.500' color='white'>Sign in</Button>
+                        <Button onClick={loginToApp} type='submit' variant='solid' bg='purple.500' color='white'>Sign in</Button>
                         <HStack>
                             <Divider />
                             <Text fontSize="sm" whiteSpace="nowrap" color="muted">
@@ -77,5 +108,5 @@ export const login = () => (
             </Box>
         </Stack>
     </Container>
-)
-export default login;
+    )}
+export default Login;

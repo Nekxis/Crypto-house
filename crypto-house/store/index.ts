@@ -1,5 +1,13 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
+import { configureStore } from '@reduxjs/toolkit';
+import userReducer from ".//userSlice"
 import {FetchStatsQuery} from "../Types";
+
+export const store = configureStore({
+    reducer: {
+        user: userReducer,
+    },
+});
 
 export const coinApi = createApi({
     reducerPath: 'coinApi',
