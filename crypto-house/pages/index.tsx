@@ -4,11 +4,16 @@ import {useGetStatsByNameQuery} from "../store/apiSlice";
 import CardComponent from "../src/cardComponent/CardComponent";
 import {Box, Heading, SimpleGrid} from "@chakra-ui/react";
 import {onAuthStateChanged} from "firebase/auth";
-import {auth} from "../firebase/clientApp";
+import {auth, collection, firestore} from "../firebase/clientApp";
 import {login, logout} from "../store/userSlice";
 import {useDispatch} from "react-redux";
+import {useCollection} from "react-firebase-hooks/firestore";
 
 export default function Home() {
+
+    // const [favorites, favoritesLoading, favoritesError] = useCollection(
+    //     collection(firestore, '/favorites'), {}
+    // )
 
     const {data} = useGetStatsByNameQuery()
     const dispatch = useDispatch()

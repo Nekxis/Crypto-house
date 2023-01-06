@@ -13,17 +13,57 @@ import {
     SimpleGrid,
     Center, IconButton,
 } from '@chakra-ui/react'
+import firebase from "@firebase/app-compat";
 // @ts-ignore
 import {Sparklines, SparklinesBars, SparklinesLine} from 'react-sparklines';
 import {StarIcon} from "@chakra-ui/icons";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {selectUser} from "../../store/userSlice";
+import {useCollection} from "react-firebase-hooks/firestore";
+import {firestore, collection, setDoc, doc} from "../../firebase/clientApp";
+import {setFirestorm, addItem, removeItem, selectFirestore} from "../../store/firestoreSlice";
 
 
 const CardComponent: React.FC<{ uuid: string, symbol: string, name: string, iconUrl: string, price: string, change: string, sparkline: string[] }> = (props) => {
     const {uuid, symbol, name, iconUrl, price, change, sparkline} = props
+    const sFirestore = useSelector(selectFirestore)
+    const dispatch = useDispatch()
     const toast = useToast()
     const user = useSelector(selectUser);
+    const favoritesRef = collection(firestore, '/favorites')
+
+    const [favorites, favoritesLoading, favoritesError] = useCollection(
+        collection(firestore, '/favorites'), {}
+    )
+
+    const addFavoriteDocument = async (sf: string[], uuid: string) => {
+        // dispatch(
+        //     setFirestorm({
+        //
+        //     })
+        // )
+        dispatch(
+            addItem({
+                uuid
+            })
+        )
+        await setDoc(doc(favoritesRef, user.uid), {
+            sf
+        })
+    };
+    const removeFavoriteDocument = async (sf: string[], uuid: string) => {
+        const [favorites, favoritesLoading, favoritesError] = useCollection(
+                collection(firestore, '/favorites'), {}
+            )
+        dispatch(
+            removeItem({
+                uuid
+            })
+        )
+        await setDoc(doc(favoritesRef, user.uid), {
+            sf
+        })
+    };
 
     function ParseFloat(price: string) {
         price = price.slice(0, (price.indexOf(".")) + 5);
@@ -60,9 +100,14 @@ const CardComponent: React.FC<{ uuid: string, symbol: string, name: string, icon
                 <Flex>
                     <Text>{symbol}</Text>
                     <Spacer/>
-                    {user &&(
-                    <IconButton size='sm' aria-label='Star ctypto' mx='.5em' icon={<StarIcon />}/>
-                        )}
+                    {user && (
+                        <Center>
+                        <IconButton onClick={() => addFavoriteDocument(sFirestore,uuid)} size='sm' aria-label='Star ctypto'
+                                    mx='.5em' icon={<StarIcon/>}/>
+                        <IconButton onClick={() => removeFavoriteDocument(sFirestore,uuid)} size='md' aria-label='Star ctypto'
+                        mx='.5em' icon={<StarIcon/>}/>
+                        </Center>
+                    )}
                     <Button size='sm' onClick={() => {
                         navigator.clipboard.writeText(uuid),
                             toast({
