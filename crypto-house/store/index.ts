@@ -11,6 +11,3 @@ export const store = configureStore({
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(coinApi.middleware),
 });
-
-
-export type RootState = ReturnType<typeof store.getState>

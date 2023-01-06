@@ -11,15 +11,19 @@ import {
     Button,
     useToast,
     SimpleGrid,
-    Center,
+    Center, IconButton,
 } from '@chakra-ui/react'
 // @ts-ignore
 import {Sparklines, SparklinesBars, SparklinesLine} from 'react-sparklines';
+import {StarIcon} from "@chakra-ui/icons";
+import {useSelector} from "react-redux";
+import {selectUser} from "../../store/userSlice";
 
 
 const CardComponent: React.FC<{ uuid: string, symbol: string, name: string, iconUrl: string, price: string, change: string, sparkline: string[] }> = (props) => {
     const {uuid, symbol, name, iconUrl, price, change, sparkline} = props
     const toast = useToast()
+    const user = useSelector(selectUser);
 
     function ParseFloat(price: string) {
         price = price.slice(0, (price.indexOf(".")) + 5);
@@ -56,6 +60,9 @@ const CardComponent: React.FC<{ uuid: string, symbol: string, name: string, icon
                 <Flex>
                     <Text>{symbol}</Text>
                     <Spacer/>
+                    {user &&(
+                    <IconButton size='sm' aria-label='Star ctypto' mx='.5em' icon={<StarIcon />}/>
+                        )}
                     <Button size='sm' onClick={() => {
                         navigator.clipboard.writeText(uuid),
                             toast({

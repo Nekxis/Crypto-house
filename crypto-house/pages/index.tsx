@@ -35,7 +35,7 @@ export default function Home() {
             <Nav/>
             <Box m='1rem'>
                 <Heading size='lg' py='2'>Top Crypto</Heading>
-                <SimpleGrid columns={2} spacing={5}>
+                <SimpleGrid columns={{ md:2, sm:1}} spacing={5}>
                     <>
                         {data?.data.coins.map(({uuid, symbol, name, iconUrl, price, change, sparkline}) => {
                             return <CardComponent key={uuid} uuid={uuid} symbol={symbol} name={name} iconUrl={iconUrl}
