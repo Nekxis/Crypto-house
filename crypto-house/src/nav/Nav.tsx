@@ -3,13 +3,14 @@ import React from "react";
 import {useSelector} from 'react-redux';
 import MenuDrawer from "../menuDrawer/MenuDrawer";
 import {selectUser} from "../../store/userSlice";
+import {useRouter} from "next/navigation";
 
 const Nav = () => {
     const user = useSelector(selectUser);
-
+    const router = useRouter()
     return (
-        <Flex h='5rem'>
-            <Center w='7rem' display='flex' flexFlow='column'>
+        <Flex h='5rem' >
+            <Center onClick={()=>{!user ? (router.push('/login')):(router.push('/'))}} w='7rem' display='flex' flexFlow='column'>
                 <Avatar/>
                 {user && (
                     <Heading size='xs'>{user.email}</Heading>
