@@ -13,12 +13,16 @@ import {
     useDisclosure, Heading, Divider
 } from '@chakra-ui/react'
 import {HamburgerIcon} from "@chakra-ui/icons";
-
+import {useSelector} from "react-redux";
+import {selectUser} from "../../store/userSlice";
+import {useRouter} from "next/router";
 
 
 const MenuDrawer = () => {
-    const { isOpen, onOpen, onClose } = useDisclosure()
+    const user = useSelector(selectUser);
+    const {isOpen, onOpen, onClose} = useDisclosure()
     const btnRef = React.useRef<any>()
+    const router = useRouter()
 
     return (
         <>
@@ -31,22 +35,26 @@ const MenuDrawer = () => {
                 onClose={onClose}
                 finalFocusRef={btnRef}
             >
-                <DrawerOverlay />
+                <DrawerOverlay/>
                 <DrawerContent>
-                    <DrawerCloseButton />
+                    <DrawerCloseButton/>
                     <DrawerHeader>Menu</DrawerHeader>
 
                     <DrawerBody>
-                        <Heading size='sm' py={1}>Home</Heading>
-                        <Divider />
+                        <Button variant='ghost' w='100%' justifyContent='left' size='sm' py={1} my={1}>Home</Button>
+                        <Divider/>
                     </DrawerBody>
+                    {!user && (
+                        <DrawerFooter display='flex' flexDirection='column'>
 
-                    <DrawerFooter>
-                        <Button variant='outline' mr={3} onClick={onClose}>
-                            Cancel
-                        </Button>
-                        <Button colorScheme='blue'>Save</Button>
-                    </DrawerFooter>
+                            <Button onClick={() => router.push('/login')} variant='ghost' w='100%' justifyContent='left' size='sm' py={1}
+                                    my={1}>Login</Button>
+                            <Divider/>
+                            <Button onClick={() => router.push('/register')} variant='ghost' w='100%' justifyContent='left' size='sm' py={1}
+                                    my={1}>Register</Button>
+
+                        </DrawerFooter>
+                    )}
                 </DrawerContent>
             </Drawer>
         </>

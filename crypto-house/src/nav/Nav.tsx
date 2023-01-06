@@ -1,12 +1,20 @@
-import {Flex, Center, Text, Spacer, Avatar} from '@chakra-ui/react'
+import {Flex, Center, Text, Spacer, Avatar, Heading, Button} from '@chakra-ui/react'
 import React from "react";
+import {useSelector} from 'react-redux';
 import MenuDrawer from "../menuDrawer/MenuDrawer";
+import {selectUser} from "../../store/userSlice";
+import {useRouter} from "next/navigation";
 
 const Nav = () => {
+    const user = useSelector(selectUser);
+    const router = useRouter()
     return (
-        <Flex h='5rem'>
-            <Center w='7rem'>
-                <Text><Avatar/></Text>
+        <Flex h='5rem' >
+            <Center onClick={()=>{!user ? (router.push('/login')):(router.push('/'))}} w='7rem' display='flex' flexFlow='column'>
+                <Avatar/>
+                {user && (
+                    <Heading size='xs'>{user.email}</Heading>
+                )}
             </Center>
             <Spacer/>
             <Center w='30rem'>
@@ -14,7 +22,7 @@ const Nav = () => {
             </Center>
             <Spacer/>
             <Center w='7rem'>
-                <Text fontSize='xl'><MenuDrawer /></Text>
+                <Text fontSize='xl'><MenuDrawer/></Text>
             </Center>
         </Flex>
     )
