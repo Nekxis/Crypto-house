@@ -14,6 +14,8 @@ export default function Home() {
     // const [favorites, favoritesLoading, favoritesError] = useCollection(
     //     collection(firestore, '/favorites'), {}
     // )
+    //
+    // console.log(favorites)
 
     const {data} = useGetStatsByNameQuery()
     const dispatch = useDispatch()

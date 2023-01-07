@@ -26,42 +26,35 @@ import {setFirestorm, addItem, removeItem, selectFirestore} from "../../store/fi
 
 const CardComponent: React.FC<{ uuid: string, symbol: string, name: string, iconUrl: string, price: string, change: string, sparkline: string[] }> = (props) => {
     const {uuid, symbol, name, iconUrl, price, change, sparkline} = props
-    const sFirestore = useSelector(selectFirestore)
     const dispatch = useDispatch()
     const toast = useToast()
+    const sFirestore = useSelector(selectFirestore)
     const user = useSelector(selectUser);
     const favoritesRef = collection(firestore, '/favorites')
 
-    const [favorites, favoritesLoading, favoritesError] = useCollection(
-        collection(firestore, '/favorites'), {}
-    )
-
-    const addFavoriteDocument = async (sf: string[], uuid: string) => {
+    const addFavoriteDocument = async (sf: string[], uuid: string, ) => {
         // dispatch(
         //     setFirestorm({
         //
         //     })
         // )
-        dispatch(
+       await dispatch(
             addItem({
-                uuid
+                uuid: uuid
             })
         )
         await setDoc(doc(favoritesRef, user.uid), {
-            sf
+             data: sf
         })
-    };
+    }
     const removeFavoriteDocument = async (sf: string[], uuid: string) => {
-        const [favorites, favoritesLoading, favoritesError] = useCollection(
-                collection(firestore, '/favorites'), {}
-            )
-        dispatch(
+       await dispatch(
             removeItem({
-                uuid
+                 uuid: uuid
             })
         )
         await setDoc(doc(favoritesRef, user.uid), {
-            sf
+            data: sf
         })
     };
 

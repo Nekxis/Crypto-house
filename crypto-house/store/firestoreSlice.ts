@@ -1,4 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
+import {popper} from "@popperjs/core";
 
 
 export const firestoreSlice = createSlice({
@@ -14,12 +15,16 @@ export const firestoreSlice = createSlice({
            state.theFirestore.push(action.payload)
         },
         removeItem: (state, action) => {
-            state.theFirestore.filter(uuid => uuid !== action.payload)
+
+           const newFirestore =  state.theFirestore.filter(item =>  item.uuid !== action.payload.uuid)
+            state.theFirestore = newFirestore
         }
 
     },
     });
 
+
 export const  {setFirestorm , addItem, removeItem } = firestoreSlice.actions
 export const selectFirestore = (state: any) => state.theFirestore;
+
 
