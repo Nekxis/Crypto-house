@@ -8,8 +8,10 @@ export const firestoreSlice = createSlice({
         theFirestore: [],
     },
     reducers: {
-        setFirestorm:(state, action) => {
-            state.theFirestore = action.payload
+        setFirestore:(state, action) => {
+           const newFirestore = action.payload
+            state.theFirestore = newFirestore?.theFirestore[0]
+
         },
         addItem: (state, action) => {
            state.theFirestore.push(action.payload)
@@ -24,7 +26,7 @@ export const firestoreSlice = createSlice({
     });
 
 
-export const  {setFirestorm , addItem, removeItem } = firestoreSlice.actions
+export const  {setFirestore , addItem, removeItem } = firestoreSlice.actions
 export const selectFirestore = (state: any) => state.theFirestore;
 
 
