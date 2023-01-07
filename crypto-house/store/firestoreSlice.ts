@@ -14,11 +14,13 @@ export const firestoreSlice = createSlice({
 
         },
         addItem: (state, action) => {
-           state.theFirestore.push(action.payload)
+           // @ts-ignore
+            state.theFirestore.push(action.payload)
         },
         removeItem: (state, action) => {
 
-           const newFirestore =  state.theFirestore.filter(item =>  item.uuid !== action.payload.uuid)
+           // @ts-ignore
+            const newFirestore =  state.theFirestore.filter(item =>  item.uuid !== action.payload.uuid)
             state.theFirestore = newFirestore
         }
 
