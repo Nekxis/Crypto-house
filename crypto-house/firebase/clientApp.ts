@@ -1,7 +1,6 @@
-import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
-import { initializeApp } from 'firebase/app';
+import { initializeApp} from 'firebase/app';
 import {
     getAuth,
     createUserWithEmailAndPassword,
@@ -10,6 +9,12 @@ import {
     signInWithEmailAndPassword,
     signOut
 } from 'firebase/auth';
+import {
+    getFirestore,
+    collection,
+    setDoc,
+    doc,
+} from "firebase/firestore";
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -23,13 +28,18 @@ const firebaseConfig = {
 initializeApp(firebaseConfig);
 
 const auth = getAuth();
+const firestore = getFirestore();
 
 export {
     auth,
+    firestore,
     createUserWithEmailAndPassword,
     updateProfile,
     onAuthStateChanged,
     signInWithEmailAndPassword,
-    signOut
+    signOut,
+    collection,
+    setDoc,
+    doc,
 }
 

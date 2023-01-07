@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {
     Card,
     CardHeader,
@@ -11,15 +11,88 @@ import {
     Button,
     useToast,
     SimpleGrid,
-    Center,
+    Center, IconButton,
 } from '@chakra-ui/react'
 // @ts-ignore
 import {Sparklines, SparklinesBars, SparklinesLine} from 'react-sparklines';
+import {StarIcon} from "@chakra-ui/icons";
+import {useDispatch, useSelector} from "react-redux";
+import {selectUser} from "../../store/userSlice";
+import {firestore, collection, setDoc, doc} from "../../firebase/clientApp";
+import {addItem, removeItem, selectFirestore, setFirestore} from "../../store/firestoreSlice";
+import {useCollection} from "react-firebase-hooks/firestore";
 
 
-const CardComponent: React.FC<{ uuid: string, symbol: string, name: string, iconUrl: string, price: string, change: string, sparkline: string[] }> = (props) => {
-    const {uuid, symbol, name, iconUrl, price, change, sparkline} = props
+const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name: string, iconUrl: string, price: string, change: string, sparkline: string[] }> = (props) => {
+    const {sv, uuid, symbol, name, iconUrl, price, change, sparkline} = props
+    const dispatch = useDispatch()
     const toast = useToast()
+    const sFirestore = useSelector(selectFirestore)
+    const user = useSelector(selectUser);
+    const favoritesRef = collection(firestore, '/favorites')
+    useEffect(() => {
+        if (user !== null && sv) {
+            const dbPost = async () => {
+                await setDoc(doc(favoritesRef, user.uid), {
+                    data: sFirestore
+                })
+                console.log(sFirestore)
+            }
+            dbPost()
+                .catch(console.error)
+        }
+    }, [sFirestore])
+
+    const [favorites] = useCollection(
+        collection(firestore, '/favorites'), {}
+    )
+
+    const updatePath = favorites?.docs.map((doc) => doc.data().data.theFirestore)
+    const serverStore =  favorites?.docs.map((doc) => doc.data().data.theFirestore[0])
+    const reduxStore = sFirestore.theFirestore
+
+    const addFavoriteDocument = (uuid: string,) => {
+        if (JSON.stringify(serverStore) !== JSON.stringify(reduxStore) && updatePath && user) {
+            dispatch(
+                setFirestore({
+                    theFirestore: updatePath
+                })
+            )
+            dispatch(
+                addItem({
+                    uuid: uuid
+                })
+            )
+
+        } else {
+            dispatch(
+                addItem({
+                    uuid: uuid
+                })
+            )
+        }
+    }
+    const removeFavoriteDocument = (uuid: string) => {
+        if (JSON.stringify(serverStore) !== JSON.stringify(reduxStore) && updatePath && user) {
+            dispatch(
+                setFirestore({
+                    theFirestore: updatePath
+                })
+            )
+            dispatch(
+                removeItem({
+                    uuid: uuid
+                })
+            )
+        } else {
+            dispatch(
+                removeItem({
+                    uuid: uuid
+                })
+            )
+        }
+        console.log(sFirestore)
+    };
 
     function ParseFloat(price: string) {
         price = price.slice(0, (price.indexOf(".")) + 5);
@@ -56,6 +129,14 @@ const CardComponent: React.FC<{ uuid: string, symbol: string, name: string, icon
                 <Flex>
                     <Text>{symbol}</Text>
                     <Spacer/>
+                    {user && (
+                        <Center>
+                            <IconButton onClick={() => addFavoriteDocument(uuid)} size='sm' aria-label='Star ctypto'
+                                        mx='.5em' icon={<StarIcon/>}/>
+                            <IconButton onClick={() => removeFavoriteDocument(uuid)} size='md' aria-label='Star ctypto'
+                                        mx='.5em' icon={<StarIcon/>}/>
+                        </Center>
+                    )}
                     <Button size='sm' onClick={() => {
                         navigator.clipboard.writeText(uuid),
                             toast({

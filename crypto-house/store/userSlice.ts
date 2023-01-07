@@ -1,5 +1,4 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {RootState} from "./index";
 export const userSlice = createSlice({
     name: 'user',
     initialState: {

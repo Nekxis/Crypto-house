@@ -17,8 +17,8 @@ const Nav = () => {
                 )}
             </Center>
             <Spacer/>
-            <Center w='30rem'>
-                <Text color='purple.500' fontSize='5xl' fontWeight='700'>Crypto House</Text>
+            <Center w={{md: '30rem', sm: '100%'}}>
+                <Text color='purple.500' fontSize={{md: '5xl', sm:'3xl'}} fontWeight='700'>Crypto House</Text>
             </Center>
             <Spacer/>
             <Center w='7rem'>
