@@ -101,7 +101,6 @@ const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name:
             )
             setStar(false)
         }
-        console.log(sFirestore)
     };
 
     function ParseFloat(price: string) {

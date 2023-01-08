@@ -23,6 +23,21 @@ export default function Home() {
     const serverStore =  favorites?.docs.map((doc) => doc.data().data.theFirestore[0])
     const reduxStore = sFirestore.theFirestore
     const {data} = useGetStatsByNameQuery()
+
+    const onPageLoad = () => {
+
+        if (JSON.stringify(serverStore) !== JSON.stringify(reduxStore) && updatePath && user) {
+            dispatch(
+                setFirestore({
+                    theFirestore: updatePath
+                })
+            )
+            setSv(true)
+        } else {
+            setSv(true)
+        }
+    }
+
     useEffect(() => {
         onAuthStateChanged(auth, (userAuth) => {
             if (userAuth) {
@@ -35,39 +50,17 @@ export default function Home() {
                         photoUrl: userAuth.photoURL,
                     })
                 );
-                if (JSON.stringify(serverStore) !== JSON.stringify(reduxStore) && updatePath ) {
-                    dispatch(
-                        setFirestore({
-                            theFirestore: updatePath
-                        })
-                    )
-                    setSv(true)
-                } else {
-                    setSv(true)
-                }
+               onPageLoad()
             } else {
                 dispatch(logout());
             }
         });
     }, []);
     useEffect(()=>{
-        const onPageLoad = () => {
 
-            if (JSON.stringify(serverStore) !== JSON.stringify(reduxStore) && updatePath && user) {
-                dispatch(
-                    setFirestore({
-                        theFirestore: updatePath
-                    })
-                )
-                setSv(true)
-            } else {
-                setSv(true)
-            }
-        }
         onPageLoad()
     }, [])
 
-    console.log(updatePath, sFirestore)
     return (
         <>
             <Nav/>
