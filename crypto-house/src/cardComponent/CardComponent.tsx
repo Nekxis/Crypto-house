@@ -25,31 +25,37 @@ import {useCollection} from "react-firebase-hooks/firestore";
 
 const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name: string, iconUrl: string, price: string, change: string, sparkline: string[] }> = (props) => {
     const {sv, uuid, symbol, name, iconUrl, price, change, sparkline} = props
+    const [star, setStar] = useState(false)
     const dispatch = useDispatch()
-    const toast = useToast()
     const sFirestore = useSelector(selectFirestore)
     const user = useSelector(selectUser);
     const favoritesRef = collection(firestore, '/favorites')
+    const toast = useToast()
+    const [favorites] = useCollection(
+        collection(firestore, '/favorites'), {}
+    )
+
+    const updatePath = favorites?.docs.map((doc) => doc.data().data.theFirestore)
+    const serverStore = favorites?.docs.map((doc) => doc.data().data.theFirestore[0])
+    // @ts-ignore
+    const reduxStore = sFirestore.theFirestore
+    const starred = reduxStore.filter(item => item.uuid === uuid)
+
+
     useEffect(() => {
         if (user !== null && sv) {
             const dbPost = async () => {
                 await setDoc(doc(favoritesRef, user.uid), {
                     data: sFirestore
                 })
-                console.log(sFirestore)
             }
             dbPost()
                 .catch(console.error)
         }
+        if (starred.length > 0) {
+            setStar(true)
+        }
     }, [sFirestore])
-
-    const [favorites] = useCollection(
-        collection(firestore, '/favorites'), {}
-    )
-
-    const updatePath = favorites?.docs.map((doc) => doc.data().data.theFirestore)
-    const serverStore =  favorites?.docs.map((doc) => doc.data().data.theFirestore[0])
-    const reduxStore = sFirestore.theFirestore
 
     const addFavoriteDocument = (uuid: string,) => {
         if (JSON.stringify(serverStore) !== JSON.stringify(reduxStore) && updatePath && user) {
@@ -63,6 +69,7 @@ const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name:
                     uuid: uuid
                 })
             )
+            setStar(true)
 
         } else {
             dispatch(
@@ -70,6 +77,7 @@ const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name:
                     uuid: uuid
                 })
             )
+            setStar(true)
         }
     }
     const removeFavoriteDocument = (uuid: string) => {
@@ -84,12 +92,14 @@ const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name:
                     uuid: uuid
                 })
             )
+            setStar(false)
         } else {
             dispatch(
                 removeItem({
                     uuid: uuid
                 })
             )
+            setStar(false)
         }
         console.log(sFirestore)
     };
@@ -131,10 +141,8 @@ const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name:
                     <Spacer/>
                     {user && (
                         <Center>
-                            <IconButton onClick={() => addFavoriteDocument(uuid)} size='sm' aria-label='Star ctypto'
-                                        mx='.5em' icon={<StarIcon/>}/>
-                            <IconButton onClick={() => removeFavoriteDocument(uuid)} size='md' aria-label='Star ctypto'
-                                        mx='.5em' icon={<StarIcon/>}/>
+                            <IconButton onClick={() =>{star ? (removeFavoriteDocument(uuid)):(addFavoriteDocument(uuid))}} size='sm' aria-label='Star ctypto'
+                                        mx='.5em' style={{backgroundColor: star ? '#ECC94B':''}} icon={<StarIcon/>}/>
                         </Center>
                     )}
                     <Button size='sm' onClick={() => {
