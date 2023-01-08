@@ -41,16 +41,25 @@ const MenuDrawer = () => {
                     <DrawerHeader>Menu</DrawerHeader>
 
                     <DrawerBody>
-                        <Button variant='ghost' w='100%' justifyContent='left' size='sm' py={1} my={1}>Home</Button>
+                        <Button variant='ghost' w='100%' justifyContent='left' size='sm' py={1} my={1} onClick={() => router.push('/')}>Home</Button>
                         <Divider/>
+                        {user && (
+                            <>
+                                <Button variant='ghost' w='100%' justifyContent='left' size='sm' py={1}
+                                        my={1} onClick={() => router.push('/favorite')}>Favorites</Button>
+                                <Divider/>
+                            </>
+                        )}
                     </DrawerBody>
                     {!user && (
                         <DrawerFooter display='flex' flexDirection='column'>
 
-                            <Button onClick={() => router.push('/login')} variant='ghost' w='100%' justifyContent='left' size='sm' py={1}
+                            <Button onClick={() => router.push('/login')} variant='ghost' w='100%' justifyContent='left'
+                                    size='sm' py={1}
                                     my={1}>Login</Button>
                             <Divider/>
-                            <Button onClick={() => router.push('/register')} variant='ghost' w='100%' justifyContent='left' size='sm' py={1}
+                            <Button onClick={() => router.push('/register')} variant='ghost' w='100%'
+                                    justifyContent='left' size='sm' py={1}
                                     my={1}>Register</Button>
 
                         </DrawerFooter>
