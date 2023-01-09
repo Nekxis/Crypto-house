@@ -114,7 +114,7 @@ const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name:
                     <Flex>
                         <Center>
                             <Img src={iconUrl} h={7}></Img>
-                            <Heading size='md' ml={2}> {name} </Heading>
+                            <Heading size='md' ml={2} noOfLines={[1, 2]}> {name} </Heading>
                         </Center>
                     </Flex>
                     <Center>
