@@ -4,55 +4,75 @@ import {Box, Heading, SimpleGrid} from "@chakra-ui/react";
 import {useGetStatsByNameQuery} from "../store/apiSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {selectFirestore, setFirestore} from "../store/firestoreSlice";
-import {useCollection} from "react-firebase-hooks/firestore";
-import {collection, doc, getDoc, firestore} from "../firebase/clientApp";
+import {collection, getDocs, firestore, query, auth} from "../firebase/clientApp";
 import CardComponent from "../src/cardComponent/CardComponent";
+import {login, logout, selectUser} from "../store/userSlice";
+import {onAuthStateChanged} from "firebase/auth";
 
 
 const Favorite = () => {
+    const sv = true
     const [fav, setFav] = useState([])
+    const user = useSelector(selectUser)
     const {data} = useGetStatsByNameQuery()
     const dispatch = useDispatch()
     const sFirestore = useSelector(selectFirestore)
-    const [favorites] = useCollection(
-        collection(firestore, '/favorites'), {}
-    )
-
-    const updatePath = favorites?.docs.map((doc) => doc.data().data.theFirestore)
-    const serverStore = favorites?.docs.map((doc) => doc.data().data.theFirestore[0])
     const reduxStore = sFirestore.theFirestore
-    const favorite = reduxStore?.map((item: { uuid: string; }) => item.uuid)
     const apiData = data?.data.coins
-    const onPageLoad = () => {
-        if (JSON.stringify(serverStore) !== JSON.stringify(reduxStore) && updatePath) {
+    const q = query(collection(firestore, "/favorites"));
+
+    const onPageLoad = async () => {
+
+        const db: string[] | any = [];
+        const serverStore = await getDocs(q);
+        serverStore.forEach((doc) => {
+            db.push(doc.data().data.theFirestore)
+        });
+
+        if (JSON.stringify(db[0]) !== JSON.stringify(reduxStore) && serverStore) {
             dispatch(
                 setFirestore({
-                    theFirestore: updatePath
+                    theFirestore: db
                 })
             )
 
         }
-        let favoriteList = favorite.map((item: string) => apiData?.find((coin) => item === coin.uuid))
+        let favoriteList = db[0].map((item: { uuid: string; }) => apiData?.find((coin) => item.uuid === coin.uuid))
         setFav(favoriteList)
+
     }
 
 
-
-
-
-    useEffect( () => {
+    useEffect(() => {
+        onAuthStateChanged(auth, (userAuth) => {
+            if (userAuth) {
+                dispatch(
+                    login({
+                        email: userAuth.email,
+                        uid: userAuth.uid,
+                        displayName: userAuth.displayName,
+                        photoUrl: userAuth.photoURL,
+                    })
+                );
+            } else {
+                dispatch(logout());
+            }
+        });
+        if (user){
         onPageLoad()
-    }, [])
-    console.log(sFirestore)
+        }
+    }, [sFirestore])
+
     return (
         <>
             <Nav/>
             <Box m='1rem'>
                 <Heading size='lg' py='2'>Favorite Crypto</Heading>
                 <SimpleGrid columns={{md: 2, sm: 1}} spacing={5}>
-                    {fav?.map(({uuid , symbol, name, iconUrl, price, change, sparkline}) => {
-                        return <CardComponent key={uuid} uuid={uuid} symbol={symbol} name={name} iconUrl={iconUrl}
-                        price={price} change={change} sparkline={sparkline}/>
+                    {fav?.map(({uuid, symbol, name, iconUrl, price, change, sparkline}) => {
+                        return <CardComponent key={uuid} sv={sv} uuid={uuid} symbol={symbol} name={name}
+                                              iconUrl={iconUrl}
+                                              price={price} change={change} sparkline={sparkline}/>
                     })}
                 </SimpleGrid>
             </Box>

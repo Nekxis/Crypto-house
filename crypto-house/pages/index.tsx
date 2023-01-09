@@ -4,44 +4,43 @@ import {useGetStatsByNameQuery} from "../store/apiSlice";
 import CardComponent from "../src/cardComponent/CardComponent";
 import {Box, Heading, SimpleGrid} from "@chakra-ui/react";
 import {onAuthStateChanged} from "firebase/auth";
-import {auth, collection, firestore} from "../firebase/clientApp";
-import {login, logout, selectUser} from "../store/userSlice";
+import {auth, collection, firestore, getDocs, query} from "../firebase/clientApp";
+import {login, logout} from "../store/userSlice";
 import {useDispatch, useSelector} from "react-redux";
-import {useCollection} from "react-firebase-hooks/firestore";
 import {selectFirestore, setFirestore} from "../store/firestoreSlice";
 
 export default function Home() {
     const [sv, setSv] = useState(false)
-    const user = useSelector(selectUser)
     const sFirestore = useSelector(selectFirestore)
     const dispatch = useDispatch()
-    const [favorites] = useCollection(
-        collection(firestore, '/favorites'), {}
-    )
-
-    const updatePath = favorites?.docs.map((doc) => doc.data().data.theFirestore)
-    const serverStore =  favorites?.docs.map((doc) => doc.data().data.theFirestore[0])
     const reduxStore = sFirestore.theFirestore
     const {data} = useGetStatsByNameQuery()
 
-    const onPageLoad = () => {
+    const q = query(collection(firestore, "/favorites"));
 
-        if (JSON.stringify(serverStore) !== JSON.stringify(reduxStore) && updatePath && user) {
+    const onPageLoad = async () => {
+
+        const db: any[] = [];
+        const serverStore = await getDocs(q);
+        serverStore.forEach((doc) => {
+            db.push(doc.data().data.theFirestore)
+        });
+
+        if (JSON.stringify(db[0]) !== JSON.stringify(reduxStore) && serverStore) {
             dispatch(
                 setFirestore({
-                    theFirestore: updatePath
+                    theFirestore: db
                 })
             )
-            setSv(true)
-        } else {
-            setSv(true)
+
         }
+        setSv(true)
+        return (db)
     }
 
     useEffect(() => {
         onAuthStateChanged(auth, (userAuth) => {
             if (userAuth) {
-                // user is logged in, send the user's details to redux, store the current user in the state
                 dispatch(
                     login({
                         email: userAuth.email,
@@ -55,11 +54,8 @@ export default function Home() {
                 dispatch(logout());
             }
         });
-    }, []);
-    useEffect(()=>{
-
         onPageLoad()
-    }, [])
+    }, []);
 
     return (
         <>

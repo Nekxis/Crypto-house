@@ -41,7 +41,6 @@ const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name:
     const reduxStore = sFirestore.theFirestore
     const starred = reduxStore.filter((item: { uuid: string; }) => item.uuid === uuid)
 
-
     useEffect(() => {
         if (user !== null && sv) {
             const dbPost = async () => {
