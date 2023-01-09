@@ -16,25 +16,37 @@ import {
     VisuallyHidden,
 } from '@chakra-ui/react'
 import {
-    auth,
-    createUserWithEmailAndPassword,
+    auth, collection,
+    createUserWithEmailAndPassword, firestore,
 } from '../firebase/clientApp';
 import React, {useState} from 'react'
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {login} from '../store/userSlice';
 import {PasswordField} from "../src/loginComponents/PasswordField";
 import {GitHubIcon} from "../src/loginComponents/IconProvider";
 import {useRouter} from "next/navigation";
 import {useDisclosure} from "@chakra-ui/react-use-disclosure";
+import {useCollection} from "react-firebase-hooks/firestore";
+import {selectFirestore, setFirestore} from "../store/firestoreSlice";
 
 
 const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [repeatPassword, setRepeatPassword] = useState(' ');
+    const sFirestore = useSelector(selectFirestore)
     const dispatch = useDispatch();
     const router = useRouter()
     const toast = useToast()
+
+    const [favorites] = useCollection(
+        collection(firestore, '/favorites'), {}
+    )
+
+    const updatePath = favorites?.docs.map((doc) => doc.data().data.theFirestore)
+    const serverStore = favorites?.docs.map((doc) => doc.data().data.theFirestore[0])
+    // @ts-ignore
+    const reduxStore = sFirestore.theFirestore
 
     const register = (e: React.FormEvent) => {
         e.preventDefault()
@@ -52,9 +64,23 @@ const Register = () => {
                 .catch((err) => {
                     alert(err);
                 });
+            if (JSON.stringify(serverStore) !== JSON.stringify(reduxStore) && updatePath) {
+                dispatch(
+                    setFirestore({
+                        theFirestore: updatePath
+                    })
+                )
+            } else {
+                toast({
+                    title: ` Error`,
+                    status: 'error',
+                    position: 'top-right',
+                    isClosable: true,
+                })
+            }
         } else {
             toast({
-                title: ` toast`,
+                title: ` Error`,
                 status: 'error',
                 position: 'top-right',
                 isClosable: true,

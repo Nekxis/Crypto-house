@@ -13,6 +13,8 @@ import {
     getFirestore,
     collection,
     setDoc,
+    getDocs,
+    query,
     doc,
 } from "firebase/firestore";
 
@@ -40,6 +42,8 @@ export {
     signOut,
     collection,
     setDoc,
+    getDocs,
+    query,
     doc,
 }
 

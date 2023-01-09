@@ -39,8 +39,7 @@ const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name:
     const serverStore = favorites?.docs.map((doc) => doc.data().data.theFirestore[0])
     // @ts-ignore
     const reduxStore = sFirestore.theFirestore
-    const starred = reduxStore.filter(item => item.uuid === uuid)
-
+    const starred = reduxStore.filter((item: { uuid: string; }) => item.uuid === uuid)
 
     useEffect(() => {
         if (user !== null && sv) {
@@ -101,7 +100,6 @@ const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name:
             )
             setStar(false)
         }
-        console.log(sFirestore)
     };
 
     function ParseFloat(price: string) {
