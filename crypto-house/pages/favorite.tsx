@@ -19,10 +19,10 @@ const Favorite = () => {
     const sFirestore = useSelector(selectFirestore)
     const reduxStore = sFirestore.theFirestore
     const apiData = data?.data.coins
-    const q = query(collection(firestore, "/favorites"));
+
 
     const onPageLoad = async () => {
-
+        const q = query(collection(firestore, "favorites"));
         const db: string[] | any = [];
         const serverStore = await getDocs(q);
         serverStore.forEach((doc) => {

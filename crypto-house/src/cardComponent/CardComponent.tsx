@@ -18,7 +18,7 @@ import {Sparklines, SparklinesBars, SparklinesLine} from 'react-sparklines';
 import {StarIcon} from "@chakra-ui/icons";
 import {useDispatch, useSelector} from "react-redux";
 import {selectUser} from "../../store/userSlice";
-import {firestore, collection, setDoc, doc} from "../../firebase/clientApp";
+import {firestore, collection, setDoc, doc, query, getDocs} from "../../firebase/clientApp";
 import {addItem, removeItem, selectFirestore, setFirestore} from "../../store/firestoreSlice";
 import {useCollection} from "react-firebase-hooks/firestore";
 
@@ -29,17 +29,33 @@ const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name:
     const dispatch = useDispatch()
     const sFirestore = useSelector(selectFirestore)
     const user = useSelector(selectUser);
-    const favoritesRef = collection(firestore, '/favorites')
-    const toast = useToast()
-    const [favorites] = useCollection(
-        collection(firestore, '/favorites'), {}
-    )
 
-    const updatePath = favorites?.docs.map((doc) => doc.data().data.theFirestore)
-    const serverStore = favorites?.docs.map((doc) => doc.data().data.theFirestore[0])
+    const toast = useToast()
+
     // @ts-ignore
     const reduxStore = sFirestore.theFirestore
-    const starred = reduxStore.filter((item: { uuid: string; }) => item.uuid === uuid)
+    const starred = reduxStore?.filter((item: { uuid: string; }) => item.uuid === uuid)
+    const db: string[] | any = [];
+    const favoritesRef = db
+
+    const onPageLoad = async (db: any) => {
+        const q = query(collection(firestore, "favorites"));
+
+        const serverStore = await getDocs(q);
+        serverStore.forEach((doc) => {
+            db.push(doc.data().data.theFirestore)
+        });
+
+        if (JSON.stringify(db[0]) !== JSON.stringify(reduxStore) && serverStore) {
+            dispatch(
+                setFirestore({
+                    theFirestore: db
+                })
+            )
+
+        }
+        return (db)
+    }
 
     useEffect(() => {
         if (user !== null && sv) {
@@ -51,16 +67,19 @@ const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name:
             dbPost()
                 .catch(console.error)
         }
-        if (starred.length > 0) {
+        if (starred?.length > 0) {
             setStar(true)
+        }
+        if (user){
+            onPageLoad(db)
         }
     }, [sFirestore])
 
-    const addFavoriteDocument = (uuid: string,) => {
-        if (JSON.stringify(serverStore) !== JSON.stringify(reduxStore) && updatePath && user) {
+    const addFavoriteDocument = (uuid: string, db: any) => {
+        if (JSON.stringify(db[0]) !== JSON.stringify(reduxStore) && db && user) {
             dispatch(
                 setFirestore({
-                    theFirestore: updatePath
+                    theFirestore: db[0]
                 })
             )
             dispatch(
@@ -79,11 +98,11 @@ const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name:
             setStar(true)
         }
     }
-    const removeFavoriteDocument = (uuid: string) => {
-        if (JSON.stringify(serverStore) !== JSON.stringify(reduxStore) && updatePath && user) {
+    const removeFavoriteDocument = (uuid: string, db: any) => {
+        if (JSON.stringify(db[0]) !== JSON.stringify(reduxStore) && db && user) {
             dispatch(
                 setFirestore({
-                    theFirestore: updatePath
+                    theFirestore: db[0]
                 })
             )
             dispatch(
@@ -139,7 +158,7 @@ const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name:
                     <Spacer/>
                     {user && (
                         <Center>
-                            <IconButton onClick={() =>{star ? (removeFavoriteDocument(uuid)):(addFavoriteDocument(uuid))}} size='sm' aria-label='Star ctypto'
+                            <IconButton onClick={() =>{star ? (removeFavoriteDocument(uuid, db)):(addFavoriteDocument(uuid, db))}} size='sm' aria-label='Star ctypto'
                                         mx='.5em' style={{backgroundColor: star ? '#ECC94B':''}} icon={<StarIcon/>}/>
                         </Center>
                     )}

@@ -5,21 +5,22 @@ import CardComponent from "../src/cardComponent/CardComponent";
 import {Box, Heading, SimpleGrid} from "@chakra-ui/react";
 import {onAuthStateChanged} from "firebase/auth";
 import {auth, collection, firestore, getDocs, query} from "../firebase/clientApp";
-import {login, logout} from "../store/userSlice";
+import {login, logout, selectUser} from "../store/userSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {selectFirestore, setFirestore} from "../store/firestoreSlice";
+import favorite from "./favorite";
 
 export default function Home() {
     const [sv, setSv] = useState(false)
+    const user = useSelector(selectUser)
     const sFirestore = useSelector(selectFirestore)
     const dispatch = useDispatch()
     const reduxStore = sFirestore.theFirestore
     const {data} = useGetStatsByNameQuery()
 
-    const q = query(collection(firestore, "/favorites"));
 
     const onPageLoad = async () => {
-
+        const q = query(collection(firestore, "favorites"));
         const db: any[] = [];
         const serverStore = await getDocs(q);
         serverStore.forEach((doc) => {
