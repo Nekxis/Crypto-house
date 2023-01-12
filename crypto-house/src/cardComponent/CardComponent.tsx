@@ -18,7 +18,7 @@ import {Sparklines, SparklinesBars, SparklinesLine} from 'react-sparklines';
 import {StarIcon} from "@chakra-ui/icons";
 import {useDispatch, useSelector} from "react-redux";
 import {selectUser} from "../../store/userSlice";
-import {firestore, collection, setDoc, doc, query, getDocs} from "../../firebase/clientApp";
+import {firestore, collection, setDoc, doc, query, getDocs, where} from "../../firebase/clientApp";
 import {addItem, removeItem, selectFirestore, setFirestore} from "../../store/firestoreSlice";
 import {useCollection} from "react-firebase-hooks/firestore";
 
@@ -35,17 +35,15 @@ const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name:
     // @ts-ignore
     const reduxStore = sFirestore.theFirestore
     const starred = reduxStore?.filter((item: { uuid: string; }) => item.uuid === uuid)
-    const db: string[] | any = [];
-    const favoritesRef = db
+    const [db, setDb] = useState([])
 
-    const onPageLoad = async (db: any) => {
-        const q = query(collection(firestore, "favorites"));
-
+    const onPageLoad = async () => {
+        const q = query(collection(firestore, "favorites"), where('user', '==', user.uid));
         const serverStore = await getDocs(q);
         serverStore.forEach((doc) => {
-            db.push(doc.data().data.theFirestore)
+            setDb(doc.data().data.theFirestore)
         });
-
+        console.log(db)
         if (JSON.stringify(db[0]) !== JSON.stringify(reduxStore) && serverStore) {
             dispatch(
                 setFirestore({
@@ -54,14 +52,16 @@ const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name:
             )
 
         }
-        return (db)
+        console.log(db)
     }
+    console.log(sFirestore)
 
     useEffect(() => {
         if (user !== null && sv) {
             const dbPost = async () => {
-                await setDoc(doc(favoritesRef, user.uid), {
-                    data: sFirestore
+                await setDoc(doc(firestore,'favorites', user.uid), {
+                    data: sFirestore,
+                    user: user.uid
                 })
             }
             dbPost()
@@ -70,18 +70,21 @@ const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name:
         if (starred?.length > 0) {
             setStar(true)
         }
-        if (user){
-            onPageLoad(db)
-        }
     }, [sFirestore])
 
-    const addFavoriteDocument = (uuid: string, db: any) => {
-        if (JSON.stringify(db[0]) !== JSON.stringify(reduxStore) && db && user) {
+    useEffect(()=>{
+        if (user){
+            onPageLoad()
+        }
+    }, [])
+
+    const addFavoriteDocument = (uuid: string) => {
             dispatch(
                 setFirestore({
-                    theFirestore: db[0]
+                    theFirestore: db
                 })
             )
+            console.log(db, uuid)
             dispatch(
                 addItem({
                     uuid: uuid
@@ -89,36 +92,20 @@ const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name:
             )
             setStar(true)
 
-        } else {
-            dispatch(
-                addItem({
-                    uuid: uuid
-                })
-            )
-            setStar(true)
-        }
     }
-    const removeFavoriteDocument = (uuid: string, db: any) => {
-        if (JSON.stringify(db[0]) !== JSON.stringify(reduxStore) && db && user) {
+    const removeFavoriteDocument = (uuid: string) => {
             dispatch(
                 setFirestore({
-                    theFirestore: db[0]
+                    theFirestore: db
                 })
             )
+            console.log(db)
             dispatch(
                 removeItem({
                     uuid: uuid
                 })
             )
             setStar(false)
-        } else {
-            dispatch(
-                removeItem({
-                    uuid: uuid
-                })
-            )
-            setStar(false)
-        }
     };
 
     function ParseFloat(price: string) {
@@ -158,7 +145,7 @@ const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name:
                     <Spacer/>
                     {user && (
                         <Center>
-                            <IconButton onClick={() =>{star ? (removeFavoriteDocument(uuid, db)):(addFavoriteDocument(uuid, db))}} size='sm' aria-label='Star ctypto'
+                            <IconButton onClick={() =>{star ? (removeFavoriteDocument(uuid)):(addFavoriteDocument(uuid))}} size='sm' aria-label='Star ctypto'
                                         mx='.5em' style={{backgroundColor: star ? '#ECC94B':''}} icon={<StarIcon/>}/>
                         </Center>
                     )}

@@ -4,7 +4,7 @@ import {Box, Heading, SimpleGrid} from "@chakra-ui/react";
 import {useGetStatsByNameQuery} from "../store/apiSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {selectFirestore, setFirestore} from "../store/firestoreSlice";
-import {collection, getDocs, firestore, query, auth} from "../firebase/clientApp";
+import {collection, getDocs, firestore, query, auth, where} from "../firebase/clientApp";
 import CardComponent from "../src/cardComponent/CardComponent";
 import {login, logout, selectUser} from "../store/userSlice";
 import {onAuthStateChanged} from "firebase/auth";
@@ -22,7 +22,7 @@ const Favorite = () => {
 
 
     const onPageLoad = async () => {
-        const q = query(collection(firestore, "favorites"));
+        const q = query(collection(firestore, "favorites"), where('user', '==', user.uid));
         const db: string[] | any = [];
         const serverStore = await getDocs(q);
         serverStore.forEach((doc) => {
@@ -43,25 +43,25 @@ const Favorite = () => {
     }
 
 
-    useEffect(() => {
-        onAuthStateChanged(auth, (userAuth) => {
-            if (userAuth) {
-                dispatch(
-                    login({
-                        email: userAuth.email,
-                        uid: userAuth.uid,
-                        displayName: userAuth.displayName,
-                        photoUrl: userAuth.photoURL,
-                    })
-                );
-            } else {
-                dispatch(logout());
-            }
-        });
-        if (user){
-        onPageLoad()
-        }
-    }, [sFirestore])
+    // useEffect(() => {
+    //     onAuthStateChanged(auth, (userAuth) => {
+    //         if (userAuth) {
+    //             dispatch(
+    //                 login({
+    //                     email: userAuth.email,
+    //                     uid: userAuth.uid,
+    //                     displayName: userAuth.displayName,
+    //                     photoUrl: userAuth.photoURL,
+    //                 })
+    //             );
+    //         } else {
+    //             dispatch(logout());
+    //         }
+    //     });
+    //     if (user){
+    //     onPageLoad()
+    //     }
+    // }, [sFirestore])
 
     return (
         <>

@@ -4,7 +4,7 @@ import {useGetStatsByNameQuery} from "../store/apiSlice";
 import CardComponent from "../src/cardComponent/CardComponent";
 import {Box, Heading, SimpleGrid} from "@chakra-ui/react";
 import {onAuthStateChanged} from "firebase/auth";
-import {auth, collection, firestore, getDocs, query} from "../firebase/clientApp";
+import {auth, collection, firestore, getDocs, query, where} from "../firebase/clientApp";
 import {login, logout, selectUser} from "../store/userSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {selectFirestore, setFirestore} from "../store/firestoreSlice";
@@ -20,7 +20,7 @@ export default function Home() {
 
 
     const onPageLoad = async () => {
-        const q = query(collection(firestore, "favorites"));
+        const q = query(collection(firestore, "favorites"), where('user', '==', user.uid));
         const db: any[] = [];
         const serverStore = await getDocs(q);
         serverStore.forEach((doc) => {
@@ -50,12 +50,13 @@ export default function Home() {
                         photoUrl: userAuth.photoURL,
                     })
                 );
-               onPageLoad()
             } else {
                 dispatch(logout());
             }
         });
-        onPageLoad()
+        if (user) {
+            onPageLoad()
+        }
     }, []);
 
     return (

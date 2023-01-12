@@ -4,31 +4,32 @@ import {popper} from "@popperjs/core";
 
 export const firestoreSlice = createSlice({
     name: 'store',
-    initialState:{
+    initialState: {
         theFirestore: [],
     },
     reducers: {
-        setFirestore:(state, action) => {
-           const newFirestore = action.payload
+        setFirestore: (state, action) => {
+            const newFirestore = action.payload
             state.theFirestore = newFirestore?.theFirestore[0]
+            console.log(state.theFirestore)
 
         },
         addItem: (state, action) => {
-           // @ts-ignore
+            // @ts-ignore
             state.theFirestore.push(action.payload)
         },
         removeItem: (state, action) => {
 
-           // @ts-ignore
-            const newFirestore =  state.theFirestore.filter(item =>  item.uuid !== action.payload.uuid)
+            // @ts-ignore
+            const newFirestore = state.theFirestore.filter(item => item.uuid !== action.payload.uuid)
             state.theFirestore = newFirestore
         }
 
     },
-    });
+});
 
 
-export const  {setFirestore , addItem, removeItem } = firestoreSlice.actions
+export const {setFirestore, addItem, removeItem} = firestoreSlice.actions
 export const selectFirestore = (state: any) => state.theFirestore;
 
 
