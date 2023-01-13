@@ -27,14 +27,14 @@ export default function Home() {
             db.push(doc.data().data.theFirestore)
         });
 
-        if (JSON.stringify(db[0]) !== JSON.stringify(reduxStore) && serverStore) {
-            dispatch(
-                setFirestore({
-                    theFirestore: db
-                })
-            )
 
-        }
+        dispatch(
+            setFirestore({
+                theFirestore: db
+            })
+        )
+
+
         setSv(true)
         return (db)
     }
@@ -64,10 +64,11 @@ export default function Home() {
             <Nav/>
             <Box m='1rem'>
                 <Heading size='lg' py='2'>Top Crypto</Heading>
-                <SimpleGrid columns={{ md:2, sm:1}} spacing={5}>
+                <SimpleGrid columns={{md: 2, sm: 1}} spacing={5}>
                     <>
-                        {data?.data.coins.map(({uuid , symbol, name, iconUrl, price, change, sparkline}) => {
-                            return <CardComponent key={uuid} sv={sv} uuid={uuid} symbol={symbol} name={name} iconUrl={iconUrl}
+                        {data?.data.coins.map(({uuid, symbol, name, iconUrl, price, change, sparkline}) => {
+                            return <CardComponent key={uuid} sv={sv} uuid={uuid} symbol={symbol} name={name}
+                                                  iconUrl={iconUrl}
                                                   price={price} change={change} sparkline={sparkline}/>
                         })}
                     </>

@@ -43,24 +43,22 @@ const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name:
         serverStore.forEach((doc) => {
             setDb((prevState) => [...prevState, doc.data().data.theFirestore])
         });
-        if (JSON.stringify(db[0]) !== JSON.stringify(reduxStore) && serverStore && db) {
-            dispatch(
-                setFirestore({
-                    theFirestore: db
-                })
-            )
-            console.log(db)
 
-        }
+        dispatch(
+            setFirestore({
+                theFirestore: db
+            })
+        )
+
 
     }
 
 
-
     useEffect(() => {
+        console.log(db, reduxStore)
         if (user !== null) {
             const dbPost = async () => {
-                await setDoc(doc(firestore,'favorites', user.uid), {
+                await setDoc(doc(firestore, 'favorites', user.uid), {
                     data: sFirestore,
                     user: user.uid
                 })
@@ -73,38 +71,38 @@ const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name:
         }
     }, [sFirestore])
 
-    useEffect(()=>{
-        if (user){
+    useEffect(() => {
+        if (user) {
             onPageLoad()
         }
     }, [])
-    console.log(sFirestore + 'f')
+    console.log(reduxStore + 'f')
     const addFavoriteDocument = (uuid: string) => {
-            // dispatch(
-            //     setFirestore({
-            //         theFirestore: db
-            //     })
-            // )
-            dispatch(
-                addItem({
-                    uuid: uuid
-                })
-            )
-            setStar(true)
+        // dispatch(
+        //     setFirestore({
+        //         theFirestore: db
+        //     })
+        // )
+        dispatch(
+            addItem({
+                uuid: uuid
+            })
+        )
+        setStar(true)
 
     }
     const removeFavoriteDocument = (uuid: string) => {
-            // dispatch(
-            //     setFirestore({
-            //         theFirestore: db
-            //     })
-            // )
-            dispatch(
-                removeItem({
-                    uuid: uuid
-                })
-            )
-            setStar(false)
+        // dispatch(
+        //     setFirestore({
+        //         theFirestore: db
+        //     })
+        // )
+        dispatch(
+            removeItem({
+                uuid: uuid
+            })
+        )
+        setStar(false)
     };
 
     function ParseFloat(price: string) {
@@ -144,8 +142,10 @@ const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name:
                     <Spacer/>
                     {user && (
                         <Center>
-                            <IconButton onClick={() =>{star ? (removeFavoriteDocument(uuid)):(addFavoriteDocument(uuid))}} size='sm' aria-label='Star ctypto'
-                                        mx='.5em' style={{backgroundColor: star ? '#ECC94B':''}} icon={<StarIcon/>}/>
+                            <IconButton onClick={() => {
+                                star ? (removeFavoriteDocument(uuid)) : (addFavoriteDocument(uuid))
+                            }} size='sm' aria-label='Star ctypto'
+                                        mx='.5em' style={{backgroundColor: star ? '#ECC94B' : ''}} icon={<StarIcon/>}/>
                         </Center>
                     )}
                     <Button size='sm' onClick={() => {
