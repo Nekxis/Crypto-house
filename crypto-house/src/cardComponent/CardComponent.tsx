@@ -32,32 +32,29 @@ const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name:
 
     const toast = useToast()
 
-    const [reduxStore, setReduxStore] = useState([])
+    const reduxStore = sFirestore.theFirestore
     const starred = reduxStore?.filter((item: { uuid: string; }) => item.uuid === uuid)
     const [db, setDb] = useState<string[]>([])
 
     const onPageLoad = async () => {
         setDb([])
-        if (sFirestore.theFirestore !== undefined){
-            setReduxStore(sFirestore.theFirestore)
-        }
         const q = query(collection(firestore, "favorites"), where('user', '==', user.uid));
         const serverStore = await getDocs(q);
         serverStore.forEach((doc) => {
             setDb((prevState) => [...prevState, doc.data().data.theFirestore])
         });
-        console.log(db)
         if (JSON.stringify(db[0]) !== JSON.stringify(reduxStore) && serverStore && db) {
             dispatch(
                 setFirestore({
                     theFirestore: db
                 })
             )
+            console.log(db)
 
         }
 
     }
-    console.log(db)
+
 
 
     useEffect(() => {
@@ -81,7 +78,7 @@ const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name:
             onPageLoad()
         }
     }, [])
-    console.log(sFirestore)
+    console.log(sFirestore + 'f')
     const addFavoriteDocument = (uuid: string) => {
             // dispatch(
             //     setFirestore({
@@ -93,7 +90,6 @@ const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name:
                     uuid: uuid
                 })
             )
-        console.log(db, uuid)
             setStar(true)
 
     }
@@ -103,7 +99,6 @@ const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name:
             //         theFirestore: db
             //     })
             // )
-            console.log(db)
             dispatch(
                 removeItem({
                     uuid: uuid
