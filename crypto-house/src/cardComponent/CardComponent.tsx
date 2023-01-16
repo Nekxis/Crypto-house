@@ -18,13 +18,11 @@ import {Sparklines, SparklinesBars, SparklinesLine} from 'react-sparklines';
 import {StarIcon} from "@chakra-ui/icons";
 import {useDispatch, useSelector} from "react-redux";
 import {selectUser} from "../../store/userSlice";
-import {firestore, collection, setDoc, doc, query, getDocs, where} from "../../firebase/clientApp";
 import {addItem, removeItem, selectFirestore, setFirestore} from "../../store/firestoreSlice";
-import {useCollection} from "react-firebase-hooks/firestore";
 
 
-const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name: string, iconUrl: string, price: string, change: string, sparkline: string[] }> = (props) => {
-    const {sv, uuid, symbol, name, iconUrl, price, change, sparkline} = props
+const CardComponent: React.FC<{ db: string[], uuid: string, symbol: string, name: string, iconUrl: string, price: string, change: string, sparkline: string[] }> = (props) => {
+    const {db, uuid, symbol, name, iconUrl, price, change, sparkline} = props
     const [star, setStar] = useState(false)
     const dispatch = useDispatch()
     const sFirestore = useSelector(selectFirestore)
@@ -34,49 +32,12 @@ const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name:
 
     const reduxStore = sFirestore.theFirestore
     const starred = reduxStore?.filter((item: { uuid: string; }) => item.uuid === uuid)
-    const [db, setDb] = useState<string[]>([])
-
-    const onPageLoad = async () => {
-        setDb([])
-        const q = query(collection(firestore, "favorites"), where('user', '==', user.uid));
-        const serverStore = await getDocs(q);
-        serverStore.forEach((doc) => {
-            setDb((prevState) => [...prevState, doc.data().data.theFirestore])
-        });
-
-        dispatch(
-            setFirestore({
-                theFirestore: db
-            })
-        )
-
-
-    }
-
-
-    useEffect(() => {
-        console.log(db, reduxStore)
-        if (user !== null) {
-            const dbPost = async () => {
-                await setDoc(doc(firestore, 'favorites', user.uid), {
-                    data: sFirestore,
-                    user: user.uid
-                })
-            }
-            dbPost()
-                .catch(console.error)
-        }
+    useEffect(()=>{
         if (starred?.length > 0) {
             setStar(true)
         }
-    }, [sFirestore])
+    },[sFirestore])
 
-    useEffect(() => {
-        if (user) {
-            onPageLoad()
-        }
-    }, [])
-    console.log(reduxStore + 'f')
     const addFavoriteDocument = (uuid: string) => {
         // dispatch(
         //     setFirestore({
@@ -89,7 +50,6 @@ const CardComponent: React.FC<{ sv: boolean, uuid: string, symbol: string, name:
             })
         )
         setStar(true)
-
     }
     const removeFavoriteDocument = (uuid: string) => {
         // dispatch(

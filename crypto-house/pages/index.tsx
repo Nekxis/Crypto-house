@@ -4,7 +4,7 @@ import {useGetStatsByNameQuery} from "../store/apiSlice";
 import CardComponent from "../src/cardComponent/CardComponent";
 import {Box, Heading, SimpleGrid} from "@chakra-ui/react";
 import {onAuthStateChanged} from "firebase/auth";
-import {auth, collection, firestore, getDocs, query, where} from "../firebase/clientApp";
+import {auth, collection, doc, firestore, getDocs, query, setDoc, where} from "../firebase/clientApp";
 import {login, logout, selectUser} from "../store/userSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {selectFirestore, setFirestore} from "../store/firestoreSlice";
@@ -12,32 +12,44 @@ import favorite from "./favorite";
 
 export default function Home() {
     const [sv, setSv] = useState(false)
+    const [db, setDb] = useState<string[]>([])
     const user = useSelector(selectUser)
     const sFirestore = useSelector(selectFirestore)
     const dispatch = useDispatch()
-    const reduxStore = sFirestore.theFirestore
     const {data} = useGetStatsByNameQuery()
+    const reduxStore = sFirestore.theFirestore
 
 
     const onPageLoad = async () => {
+        setDb([])
         const q = query(collection(firestore, "favorites"), where('user', '==', user.uid));
-        const db: any[] = [];
         const serverStore = await getDocs(q);
         serverStore.forEach((doc) => {
-            db.push(doc.data().data.theFirestore)
+            setDb((prevState) => [...prevState, doc.data().data.theFirestore])
+            console.log(db)
         });
-
-
         dispatch(
             setFirestore({
                 theFirestore: db
             })
         )
-
-
+        console.log(db)
         setSv(true)
-        return (db)
     }
+
+    useEffect(() => {
+        console.log(db, sFirestore)
+        if (user !== null && sv) {
+            const dbPost = async () => {
+                await setDoc(doc(firestore, 'favorites', user.uid), {
+                    data: sFirestore,
+                    user: user.uid
+                })
+            }
+            dbPost()
+                .catch(console.error)
+        }
+    }, [sFirestore])
 
     useEffect(() => {
         onAuthStateChanged(auth, (userAuth) => {
@@ -67,7 +79,7 @@ export default function Home() {
                 <SimpleGrid columns={{md: 2, sm: 1}} spacing={5}>
                     <>
                         {data?.data.coins.map(({uuid, symbol, name, iconUrl, price, change, sparkline}) => {
-                            return <CardComponent key={uuid} sv={sv} uuid={uuid} symbol={symbol} name={name}
+                            return <CardComponent key={uuid} db={db} uuid={uuid} symbol={symbol} name={name}
                                                   iconUrl={iconUrl}
                                                   price={price} change={change} sparkline={sparkline}/>
                         })}

@@ -8,28 +8,29 @@ import {collection, getDocs, firestore, query, auth, where} from "../firebase/cl
 import CardComponent from "../src/cardComponent/CardComponent";
 import {login, logout, selectUser} from "../store/userSlice";
 import {onAuthStateChanged} from "firebase/auth";
+import {coin, uuid} from "../Types";
 
 
 const Favorite = () => {
     const sv = true
     const [fav, setFav] = useState([])
+    const [db, setDb] = useState<string[]>([])
     const user = useSelector(selectUser)
     const {data} = useGetStatsByNameQuery()
     const dispatch = useDispatch()
     const sFirestore = useSelector(selectFirestore)
-    const reduxStore = sFirestore.theFirestore
     const apiData = data?.data.coins
 
 
+
     const onPageLoad = async () => {
+        setDb([])
         const q = query(collection(firestore, "favorites"), where('user', '==', user.uid));
-        const db: string[] | any = [];
         const serverStore = await getDocs(q);
         serverStore.forEach((doc) => {
-            db.push(doc.data().data.theFirestore)
+            setDb((prevState) => [...prevState, doc.data().data.theFirestore])
         });
-
-        if (JSON.stringify(db[0]) !== JSON.stringify(reduxStore) && serverStore) {
+        if (db !== undefined) {
             dispatch(
                 setFirestore({
                     theFirestore: db
@@ -37,31 +38,32 @@ const Favorite = () => {
             )
 
         }
-        let favoriteList = db[0].map((item: { uuid: string; }) => apiData?.find((coin) => item.uuid === coin.uuid))
-        setFav(favoriteList)
+
+
+        setFav(db?.map((item: uuid[] ) => apiData?.find((coin: coin[] | undefined) => item.uuid === coin.uuid)))
 
     }
 
 
-    // useEffect(() => {
-    //     onAuthStateChanged(auth, (userAuth) => {
-    //         if (userAuth) {
-    //             dispatch(
-    //                 login({
-    //                     email: userAuth.email,
-    //                     uid: userAuth.uid,
-    //                     displayName: userAuth.displayName,
-    //                     photoUrl: userAuth.photoURL,
-    //                 })
-    //             );
-    //         } else {
-    //             dispatch(logout());
-    //         }
-    //     });
-    //     if (user){
-    //     onPageLoad()
-    //     }
-    // }, [sFirestore])
+    useEffect(() => {
+        onAuthStateChanged(auth, (userAuth) => {
+            if (userAuth) {
+                dispatch(
+                    login({
+                        email: userAuth.email,
+                        uid: userAuth.uid,
+                        displayName: userAuth.displayName,
+                        photoUrl: userAuth.photoURL,
+                    })
+                );
+            } else {
+                dispatch(logout());
+            }
+        });
+        if (user){
+        onPageLoad()
+        }
+    }, [])
 
     return (
         <>
@@ -70,7 +72,7 @@ const Favorite = () => {
                 <Heading size='lg' py='2'>Favorite Crypto</Heading>
                 <SimpleGrid columns={{md: 2, sm: 1}} spacing={5}>
                     {fav?.map(({uuid, symbol, name, iconUrl, price, change, sparkline}) => {
-                        return <CardComponent key={uuid} sv={sv} uuid={uuid} symbol={symbol} name={name}
+                        return <CardComponent key={uuid} db={db} uuid={uuid} symbol={symbol} name={name}
                                               iconUrl={iconUrl}
                                               price={price} change={change} sparkline={sparkline}/>
                     })}
