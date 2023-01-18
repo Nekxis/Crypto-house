@@ -22,7 +22,6 @@ const Favorite = () => {
     const apiData = data?.data.coins
 
 
-
     const onPageLoad = async () => {
         setDb([])
         const q = query(collection(firestore, "favorites"), where('user', '==', user.uid));
@@ -30,17 +29,15 @@ const Favorite = () => {
         serverStore.forEach((doc) => {
             setDb((prevState) => [...prevState, doc.data().data.theFirestore])
         });
-        if (db !== undefined) {
-            dispatch(
-                setFirestore({
-                    theFirestore: db
-                })
-            )
 
-        }
+        dispatch(
+            setFirestore({
+                theFirestore: db
+            })
+        )
 
 
-        setFav(db?.map((item: uuid[] ) => apiData?.find((coin: coin[] | undefined) => item.uuid === coin.uuid)))
+        setFav(db?.map((item: uuid[]) => apiData?.find((coin: coin[] | undefined) => item.uuid === coin.uuid)))
 
     }
 
@@ -60,8 +57,8 @@ const Favorite = () => {
                 dispatch(logout());
             }
         });
-        if (user){
-        onPageLoad()
+        if (user) {
+            onPageLoad()
         }
     }, [])
 

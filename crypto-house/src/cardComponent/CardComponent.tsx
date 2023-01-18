@@ -39,11 +39,6 @@ const CardComponent: React.FC<{ db: string[], uuid: string, symbol: string, name
     },[sFirestore])
 
     const addFavoriteDocument = (uuid: string) => {
-        // dispatch(
-        //     setFirestore({
-        //         theFirestore: db
-        //     })
-        // )
         dispatch(
             addItem({
                 uuid: uuid
@@ -52,11 +47,6 @@ const CardComponent: React.FC<{ db: string[], uuid: string, symbol: string, name
         setStar(true)
     }
     const removeFavoriteDocument = (uuid: string) => {
-        // dispatch(
-        //     setFirestore({
-        //         theFirestore: db
-        //     })
-        // )
         dispatch(
             removeItem({
                 uuid: uuid

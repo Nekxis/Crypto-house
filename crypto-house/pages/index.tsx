@@ -4,11 +4,12 @@ import {useGetStatsByNameQuery} from "../store/apiSlice";
 import CardComponent from "../src/cardComponent/CardComponent";
 import {Box, Heading, SimpleGrid} from "@chakra-ui/react";
 import {onAuthStateChanged} from "firebase/auth";
-import {auth, collection, doc, firestore, getDocs, query, setDoc, where} from "../firebase/clientApp";
+import {auth, collection, doc, firestore, getDocs, onSnapshot, query, setDoc, where} from "../firebase/clientApp";
 import {login, logout, selectUser} from "../store/userSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {selectFirestore, setFirestore} from "../store/firestoreSlice";
 import favorite from "./favorite";
+
 
 export default function Home() {
     const [sv, setSv] = useState(false)
@@ -17,28 +18,31 @@ export default function Home() {
     const sFirestore = useSelector(selectFirestore)
     const dispatch = useDispatch()
     const {data} = useGetStatsByNameQuery()
-    const reduxStore = sFirestore.theFirestore
 
 
     const onPageLoad = async () => {
-        setDb([])
         const q = query(collection(firestore, "favorites"), where('user', '==', user.uid));
         const serverStore = await getDocs(q);
         serverStore.forEach((doc) => {
             setDb((prevState) => [...prevState, doc.data().data.theFirestore])
-            console.log(db)
         });
-        dispatch(
-            setFirestore({
-                theFirestore: db
-            })
-        )
         console.log(db)
+        if (db !== undefined){
+        // dispatch(
+        //     setFirestore({
+        //         theFirestore: db
+        //     })
+        // )
+        }
         setSv(true)
     }
+    useEffect(() => {
+        if (user) {
+            onPageLoad()
+        }
+    }, [user])
 
     useEffect(() => {
-        console.log(db, sFirestore)
         if (user !== null && sv) {
             const dbPost = async () => {
                 await setDoc(doc(firestore, 'favorites', user.uid), {
@@ -49,6 +53,7 @@ export default function Home() {
             dbPost()
                 .catch(console.error)
         }
+        console.log(sFirestore)
     }, [sFirestore])
 
     useEffect(() => {
@@ -66,6 +71,7 @@ export default function Home() {
                 dispatch(logout());
             }
         });
+        console.log(user)
         if (user) {
             onPageLoad()
         }
