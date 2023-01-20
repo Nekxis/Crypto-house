@@ -8,8 +8,6 @@ import {auth, collection, doc, firestore, getDocs, onSnapshot, query, setDoc, wh
 import {login, logout, selectUser} from "../store/userSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {selectFirestore, setFirestore} from "../store/firestoreSlice";
-import favorite from "./favorite";
-
 
 export default function Home() {
     const [sv, setSv] = useState(false)
@@ -21,24 +19,26 @@ export default function Home() {
 
 
     const onPageLoad = async () => {
+        setDb([])
         const q = query(collection(firestore, "favorites"), where('user', '==', user.uid));
         const serverStore = await getDocs(q);
         serverStore.forEach((doc) => {
-            setDb((prevState) => [...prevState, doc.data().data.theFirestore])
+            setDb((prevState) => [...prevState, doc.data().data])
         });
-        console.log(db)
-        if (db !== undefined){
-        // dispatch(
-        //     setFirestore({
-        //         theFirestore: db
-        //     })
-        // )
-        }
+        console.log(db, ' onPage')
+        if (db !== undefined && db.length !== 0){
+        dispatch(
+            setFirestore({
+                theFirestore: db
+            })
+        )}
         setSv(true)
     }
-    useEffect(() => {
+
+    useEffect( () => {
         if (user) {
             onPageLoad()
+               .catch(console.error)
         }
     }, [user])
 
@@ -53,7 +53,7 @@ export default function Home() {
             dbPost()
                 .catch(console.error)
         }
-        console.log(sFirestore)
+        console.log(sFirestore, "fire")
     }, [sFirestore])
 
     useEffect(() => {
@@ -70,11 +70,11 @@ export default function Home() {
             } else {
                 dispatch(logout());
             }
+            if (user) {
+                onPageLoad()
+                    .catch(console.error)
+            }
         });
-        console.log(user)
-        if (user) {
-            onPageLoad()
-        }
     }, []);
 
     return (

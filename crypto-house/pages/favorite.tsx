@@ -13,7 +13,7 @@ import {coin, uuid} from "../Types";
 
 const Favorite = () => {
     const sv = true
-    const [fav, setFav] = useState([])
+    const [fav, setFav] = useState<string[]>([])
     const [db, setDb] = useState<string[]>([])
     const user = useSelector(selectUser)
     const {data} = useGetStatsByNameQuery()
@@ -22,25 +22,30 @@ const Favorite = () => {
     const apiData = data?.data.coins
 
 
+
     const onPageLoad = async () => {
         setDb([])
         const q = query(collection(firestore, "favorites"), where('user', '==', user.uid));
         const serverStore = await getDocs(q);
         serverStore.forEach((doc) => {
-            setDb((prevState) => [...prevState, doc.data().data.theFirestore])
+            setDb((prevState) => [...prevState, doc.data().data])
         });
-
-        dispatch(
-            setFirestore({
-                theFirestore: db
-            })
-        )
-
-
-        setFav(db?.map((item: uuid[]) => apiData?.find((coin: coin[] | undefined) => item.uuid === coin.uuid)))
-
+        console.log(db, ' onPage')
+        if (db !== undefined && db.length !== 0){
+            dispatch(
+                setFirestore({
+                    theFirestore: db
+                })
+            )
+        }
+        setFav(db?.map((item: {uuid: string}) => apiData?.find((coin: coin) => item.uuid === coin.uuid)))
     }
-
+    useEffect( () => {
+        if (user) {
+            onPageLoad()
+                .catch(console.error)
+        }
+    }, [user])
 
     useEffect(() => {
         onAuthStateChanged(auth, (userAuth) => {
@@ -57,9 +62,6 @@ const Favorite = () => {
                 dispatch(logout());
             }
         });
-        if (user) {
-            onPageLoad()
-        }
     }, [])
 
     return (
