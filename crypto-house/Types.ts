@@ -17,7 +17,7 @@ type stats = {
     total24hVolume: string,
 }
 
-type coin = {
+export type coin = {
     uuid: string,
     symbol: string,
     name: string,
@@ -27,4 +27,7 @@ type coin = {
     sparkline: string[]
 }
 
+export type uuid = {
+    uuid: string
+}
 
