@@ -11,8 +11,6 @@ export const firestoreSlice = createSlice({
         setFirestore: (state, action) => {
             const newFirestore = action.payload
             state.theFirestore = newFirestore?.theFirestore[0]
-            console.log(state.theFirestore)
-
         },
         addItem: (state, action) => {
             // @ts-ignore

@@ -25,14 +25,14 @@ export default function Home() {
         serverStore.forEach((doc) => {
             setDb((prevState) => [...prevState, doc.data().data])
         });
-        console.log(db, ' onPage')
-        if (db !== undefined && db.length !== 0){
+        if (db[0] !== undefined) {
         dispatch(
             setFirestore({
-                theFirestore: db
+                theFirestore: db[0]
             })
         )}
         setSv(true)
+        console.log(db[0], sFirestore)
     }
 
     useEffect( () => {
@@ -40,7 +40,8 @@ export default function Home() {
             onPageLoad()
                .catch(console.error)
         }
-    }, [user])
+        console.log('test')
+    }, [user,sFirestore])
 
     useEffect(() => {
         if (user !== null && sv) {
@@ -53,7 +54,7 @@ export default function Home() {
             dbPost()
                 .catch(console.error)
         }
-        console.log(sFirestore, "fire")
+
     }, [sFirestore])
 
     useEffect(() => {
