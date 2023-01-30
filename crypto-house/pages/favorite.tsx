@@ -3,22 +3,20 @@ import Nav from "../src/nav/Nav";
 import {Box, Heading, SimpleGrid} from "@chakra-ui/react";
 import {useGetStatsByNameQuery} from "../store/apiSlice";
 import {useDispatch, useSelector} from "react-redux";
-import {selectFirestore, setFirestore} from "../store/firestoreSlice";
+import {setFirestore} from "../store/firestoreSlice";
 import {collection, getDocs, firestore, query, auth, where} from "../firebase/clientApp";
 import CardComponent from "../src/cardComponent/CardComponent";
 import {login, logout, selectUser} from "../store/userSlice";
 import {onAuthStateChanged} from "firebase/auth";
-import {coin, uuid} from "../Types";
+import {coin} from "../Types";
 
 
 const Favorite = () => {
-    const sv = true
     const [fav, setFav] = useState<string[]>([])
     const [db, setDb] = useState<string[]>([])
     const user = useSelector(selectUser)
     const {data} = useGetStatsByNameQuery()
     const dispatch = useDispatch()
-    const sFirestore = useSelector(selectFirestore)
     const apiData = data?.data.coins
 
 
@@ -28,16 +26,15 @@ const Favorite = () => {
         const q = query(collection(firestore, "favorites"), where('user', '==', user.uid));
         const serverStore = await getDocs(q);
         serverStore.forEach((doc) => {
-            setDb((prevState) => [...prevState, doc.data().data])
+            setDb(doc.data().data)
         });
-        console.log(db, ' onPage')
-        if (db !== undefined && db.length !== 0){
+        console.log(db)
+        if (db[0] !== undefined) {
             dispatch(
                 setFirestore({
                     theFirestore: db
                 })
-            )
-        }
+            )}
         setFav(db?.map((item: {uuid: string}) => apiData?.find((coin: coin) => item.uuid === coin.uuid)))
     }
     useEffect( () => {
@@ -71,7 +68,7 @@ const Favorite = () => {
                 <Heading size='lg' py='2'>Favorite Crypto</Heading>
                 <SimpleGrid columns={{md: 2, sm: 1}} spacing={5}>
                     {fav?.map(({uuid, symbol, name, iconUrl, price, change, sparkline}) => {
-                        return <CardComponent key={uuid} db={db} uuid={uuid} symbol={symbol} name={name}
+                        return <CardComponent key={uuid} uuid={uuid} symbol={symbol} name={name}
                                               iconUrl={iconUrl}
                                               price={price} change={change} sparkline={sparkline}/>
                     })}
