@@ -23,16 +23,17 @@ export default function Home() {
         const q = query(collection(firestore, "favorites"), where('user', '==', user.uid));
         const serverStore = await getDocs(q);
         serverStore.forEach((doc) => {
-            setDb((prevState) => [...prevState, doc.data().data])
+            setDb(doc.data().data)
         });
+        console.log(db)
         if (db[0] !== undefined) {
         dispatch(
             setFirestore({
-                theFirestore: db[0]
+                theFirestore: db
             })
         )}
         setSv(true)
-        console.log(db[0], sFirestore)
+        console.log(db, sFirestore)
     }
 
     useEffect( () => {
@@ -41,13 +42,13 @@ export default function Home() {
                .catch(console.error)
         }
         console.log('test')
-    }, [user,sFirestore])
+    }, [user])
 
     useEffect(() => {
         if (user !== null && sv) {
             const dbPost = async () => {
                 await setDoc(doc(firestore, 'favorites', user.uid), {
-                    data: sFirestore,
+                    data: sFirestore, //data: sFirestore, -> sFirestore.theFirestore | remove data from db, simplify reducer
                     user: user.uid
                 })
             }
@@ -70,10 +71,6 @@ export default function Home() {
                 );
             } else {
                 dispatch(logout());
-            }
-            if (user) {
-                onPageLoad()
-                    .catch(console.error)
             }
         });
     }, []);
