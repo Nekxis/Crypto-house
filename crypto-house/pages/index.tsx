@@ -17,10 +17,9 @@ export default function Home() {
     const dispatch = useDispatch()
     const {data} = useGetStatsByNameQuery()
 
-
-    const onPageLoad = async () => {
-        setDb([])
-        const q = query(collection(firestore, "favorites"), where('user', '==', user.uid));
+    console.log(user)
+    const onPageLoad = async (user: string) => {
+        const q = query(collection(firestore, "favorites"), where('user', '==', user));
         const serverStore = await getDocs(q);
         serverStore.forEach((doc) => {
             setDb(doc.data().data)
@@ -38,10 +37,10 @@ export default function Home() {
 
     useEffect( () => {
         if (user) {
-            onPageLoad()
+            onPageLoad(user.uid)
                .catch(console.error)
         }
-        console.log('test')
+        console.log(user, "u")
     }, [user])
 
     useEffect(() => {
@@ -69,6 +68,7 @@ export default function Home() {
                         photoUrl: userAuth.photoURL,
                     })
                 );
+                onPageLoad(userAuth.uid) //need check
             } else {
                 dispatch(logout());
             }
