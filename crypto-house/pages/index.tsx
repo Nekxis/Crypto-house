@@ -25,8 +25,8 @@ export default function Home() {
         serverStore.forEach((doc) => {
             setDb(doc.data().data)
         });
-        console.log(db)
-        if (db[0] !== undefined) {
+        console.log(db, "db0")
+        if (!Array.isArray(db) && !db.length) {
         dispatch(
             setFirestore({
                 theFirestore: db
