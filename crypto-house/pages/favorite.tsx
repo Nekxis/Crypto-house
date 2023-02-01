@@ -13,36 +13,46 @@ import {coin} from "../Types";
 
 const Favorite = () => {
     const [fav, setFav] = useState<string[]>([])
-    const [db, setDb] = useState<string[]>([])
     const user = useSelector(selectUser)
     const {data} = useGetStatsByNameQuery()
     const dispatch = useDispatch()
     const apiData = data?.data.coins
 
 
+    const onPageLoad = async (user: string) => {
+        const db: string[] = []
+        const q = query(collection(firestore, "favorites"), where('user', '==', user));
+        const serverStore = await getDocs(q)
+        if (serverStore) {
+            serverStore.forEach((doc) => {
+                // setDb(doc.data().data);
+                db.push(doc.data().data)
+            });
+            if (db[0]) {
+                console.log("test", db, db[0])
+                dispatch(
+                    setFirestore({
+                        theFirestore: db[0]
+                    })
+                )
+            }
+        }
+        if (db[0] && apiData) {
+            const cleanDb = []
+            cleanDb.push(db[0])
+            setFav(cleanDb.map((item: string) => apiData.find((coin: coin) => item === coin.uuid)))
+        }
 
-    const onPageLoad = async () => {
-        setDb([])
-        const q = query(collection(firestore, "favorites"), where('user', '==', user.uid));
-        const serverStore = await getDocs(q);
-        serverStore.forEach((doc) => {
-            setDb(doc.data().data)
-        });
-        console.log(db)
-        if (db[0] !== undefined) {
-            dispatch(
-                setFirestore({
-                    theFirestore: db
-                })
-            )}
-        setFav(db?.map((item: {uuid: string}) => apiData?.find((coin: coin) => item.uuid === coin.uuid)))
+
     }
-    useEffect( () => {
+
+    useEffect(() => {
         if (user) {
-            onPageLoad()
+            onPageLoad(user.uid)
                 .catch(console.error)
         }
-    }, [user])
+    }, [])
+
 
     useEffect(() => {
         onAuthStateChanged(auth, (userAuth) => {

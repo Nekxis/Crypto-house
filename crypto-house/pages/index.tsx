@@ -11,37 +11,39 @@ import {selectFirestore, setFirestore} from "../store/firestoreSlice";
 
 export default function Home() {
     const [sv, setSv] = useState(false)
-    const [db, setDb] = useState<string[]>([])
+    // const [db, setDb] = useState<string[]>([])
     const user = useSelector(selectUser)
     const sFirestore = useSelector(selectFirestore)
     const dispatch = useDispatch()
     const {data} = useGetStatsByNameQuery()
 
-    console.log(user)
     const onPageLoad = async (user: string) => {
+        const db: string[] = []
         const q = query(collection(firestore, "favorites"), where('user', '==', user));
-        const serverStore = await getDocs(q);
-        serverStore.forEach((doc) => {
-            setDb(doc.data().data)
-        });
-        console.log(db, "db0")
-        if (!Array.isArray(db) && !db.length) {
-        dispatch(
-            setFirestore({
-                theFirestore: db
-            })
-        )}
-        setSv(true)
-        console.log(db, sFirestore)
+        const serverStore = await getDocs(q)
+        if (serverStore) {
+            serverStore.forEach((doc) => {
+                // setDb(doc.data().data);
+                db.push(doc.data().data)
+            });
+            if (db[0]) {
+
+                dispatch(
+                    setFirestore({
+                        theFirestore: db[0]
+                    })
+                )
+            }
+            setSv(true)
+        }
     }
 
-    useEffect( () => {
+    useEffect(() => {
         if (user) {
             onPageLoad(user.uid)
-               .catch(console.error)
+                .catch(console.error)
         }
-        console.log(user, "u")
-    }, [user])
+    }, [])
 
     useEffect(() => {
         if (user !== null && sv) {

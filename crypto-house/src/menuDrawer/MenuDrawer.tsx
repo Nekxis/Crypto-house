@@ -45,7 +45,7 @@ const MenuDrawer = () => {
                         <Divider/>
                         {user && (
                             <>
-                                <Button variant='ghost' w='100%' justifyContent='left' size='sm' py={1}
+                                <Button isLoading variant='ghost' w='100%' justifyContent='left' size='sm' py={1}
                                         my={1} onClick={() => router.push('/favorite')}>Favorites</Button>
                                 <Divider/>
                             </>

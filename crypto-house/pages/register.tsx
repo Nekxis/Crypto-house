@@ -29,7 +29,6 @@ import {useDisclosure} from "@chakra-ui/react-use-disclosure";
 import {useCollection} from "react-firebase-hooks/firestore";
 import {selectFirestore, setFirestore} from "../store/firestoreSlice";
 
-
 const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -38,15 +37,6 @@ const Register = () => {
     const dispatch = useDispatch();
     const router = useRouter()
     const toast = useToast()
-
-    const [favorites] = useCollection(
-        collection(firestore, '/favorites'), {}
-    )
-
-    const updatePath = favorites?.docs.map((doc) => doc.data().data.theFirestore)
-    const serverStore = favorites?.docs.map((doc) => doc.data().data.theFirestore[0])
-    // @ts-ignore
-    const reduxStore = sFirestore.theFirestore
 
     const register = (e: React.FormEvent) => {
         e.preventDefault()
@@ -64,20 +54,6 @@ const Register = () => {
                 .catch((err) => {
                     alert(err);
                 });
-            if (JSON.stringify(serverStore) !== JSON.stringify(reduxStore) && updatePath) {
-                dispatch(
-                    setFirestore({
-                        theFirestore: updatePath
-                    })
-                )
-            } else {
-                toast({
-                    title: ` Error`,
-                    status: 'error',
-                    position: 'top-right',
-                    isClosable: true,
-                })
-            }
         } else {
             toast({
                 title: ` Error`,
