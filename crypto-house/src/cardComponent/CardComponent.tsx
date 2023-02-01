@@ -18,11 +18,11 @@ import {Sparklines, SparklinesBars, SparklinesLine} from 'react-sparklines';
 import {StarIcon} from "@chakra-ui/icons";
 import {useDispatch, useSelector} from "react-redux";
 import {selectUser} from "../../store/userSlice";
-import {addItem, removeItem, selectFirestore, setFirestore} from "../../store/firestoreSlice";
+import {addItem, removeItem, selectFirestore} from "../../store/firestoreSlice";
 
 
-const CardComponent: React.FC<{ db: string[], uuid: string, symbol: string, name: string, iconUrl: string, price: string, change: string, sparkline: string[] }> = (props) => {
-    const {db, uuid, symbol, name, iconUrl, price, change, sparkline} = props
+const CardComponent: React.FC<{ uuid: string, symbol: string, name: string, iconUrl: string, price: string, change: string, sparkline: string[] }> = (props) => {
+    const {uuid, symbol, name, iconUrl, price, change, sparkline} = props
     const [star, setStar] = useState(false)
     const dispatch = useDispatch()
     const sFirestore = useSelector(selectFirestore)

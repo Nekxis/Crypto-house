@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {StrictMode} from 'react';
 import '../styles/globals.css'
 import type {AppProps} from 'next/app'
 import {ChakraProvider} from '@chakra-ui/react'
@@ -10,11 +10,13 @@ export default function App({Component, pageProps}: AppProps) {
 
 
     return (
-            <Provider store={store}>
-                <ChakraProvider>
+        <Provider store={store}>
+            <ChakraProvider>
+                <StrictMode>
                     <Component {...pageProps} />
-                </ChakraProvider>
-            </Provider>
+                </StrictMode>
+            </ChakraProvider>
+        </Provider>
     )
 
 }

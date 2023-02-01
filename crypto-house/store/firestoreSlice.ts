@@ -10,9 +10,8 @@ export const firestoreSlice = createSlice({
     reducers: {
         setFirestore: (state, action) => {
             const newFirestore = action.payload
-            state.theFirestore = newFirestore?.theFirestore
-            console.log(state.theFirestore)
-
+            state.theFirestore = newFirestore?.theFirestore.theFirestore
+            console.log(state.theFirestore, action.payload)
         },
         addItem: (state, action) => {
             // @ts-ignore

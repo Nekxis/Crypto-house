@@ -16,7 +16,7 @@ import {
 } from '@chakra-ui/react'
 import React, {useState} from 'react';
 import {
-    auth, collection, firestore,
+    auth,
     signInWithEmailAndPassword,
 } from '../firebase/clientApp';
 import {useDispatch, useSelector} from 'react-redux';
@@ -24,8 +24,7 @@ import {login} from '../store/userSlice';
 import {GitHubIcon} from "../src/loginComponents/IconProvider";
 import {PasswordField} from "../src/loginComponents/PasswordField";
 import {useRouter} from "next/navigation";
-import {useCollection} from "react-firebase-hooks/firestore";
-import {selectFirestore, setFirestore} from "../store/firestoreSlice";
+import {selectFirestore} from "../store/firestoreSlice";
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -34,14 +33,6 @@ const Login = () => {
     const dispatch = useDispatch();
     const router = useRouter()
 
-    const [favorites] = useCollection(
-        collection(firestore, '/favorites'), {}
-    )
-
-    const updatePath = favorites?.docs.map((doc) => doc.data().data.theFirestore)
-    const serverStore = favorites?.docs.map((doc) => doc.data().data.theFirestore[0])
-    // @ts-ignore
-    const reduxStore = sFirestore.theFirestore
     const loginToApp = (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -59,16 +50,6 @@ const Login = () => {
             .catch((err) => {
                 alert(err);
             });
-        if (JSON.stringify(serverStore) !== JSON.stringify(reduxStore) && updatePath ) {
-            dispatch(
-                setFirestore({
-                    theFirestore: updatePath
-                })
-            )
-
-        } else {
-            console.log('error')
-        }
 
     };
 
