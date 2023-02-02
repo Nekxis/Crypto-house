@@ -8,9 +8,8 @@ import {
     DrawerContent,
     DrawerCloseButton,
     Button,
-    Input,
-
-    useDisclosure, Heading, Divider
+    Divider,
+    useDisclosure
 } from '@chakra-ui/react'
 import {HamburgerIcon} from "@chakra-ui/icons";
 import {useSelector} from "react-redux";
@@ -41,7 +40,8 @@ const MenuDrawer = () => {
                     <DrawerHeader>Menu</DrawerHeader>
 
                     <DrawerBody>
-                        <Button variant='ghost' w='100%' justifyContent='left' size='sm' py={1} my={1} onClick={() => router.push('/')}>Home</Button>
+                        <Button variant='ghost' w='100%' justifyContent='left' size='sm' py={1} my={1}
+                                onClick={() => router.push('/')}>Home</Button>
                         <Divider/>
                         {user && (
                             <>

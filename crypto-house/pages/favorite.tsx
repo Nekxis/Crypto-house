@@ -25,7 +25,6 @@ const Favorite = () => {
         const serverStore = await getDocs(q)
         if (serverStore) {
             serverStore.forEach((doc) => {
-                // setDb(doc.data().data);
                 db.push(doc.data().data)
             });
             if (db[0]) {
@@ -52,7 +51,6 @@ const Favorite = () => {
                 .catch(console.error)
         }
     }, [])
-
 
     useEffect(() => {
         onAuthStateChanged(auth, (userAuth) => {
@@ -87,4 +85,5 @@ const Favorite = () => {
         </>
     )
 }
+
 export default Favorite;

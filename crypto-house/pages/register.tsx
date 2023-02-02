@@ -1,5 +1,4 @@
 import {
-    Alert, AlertIcon, AlertTitle,
     Box,
     Button,
     Checkbox, CloseButton,
@@ -16,24 +15,20 @@ import {
     VisuallyHidden,
 } from '@chakra-ui/react'
 import {
-    auth, collection,
-    createUserWithEmailAndPassword, firestore,
+    auth,
+    createUserWithEmailAndPassword,
 } from '../firebase/clientApp';
 import React, {useState} from 'react'
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {login} from '../store/userSlice';
 import {PasswordField} from "../src/loginComponents/PasswordField";
 import {GitHubIcon} from "../src/loginComponents/IconProvider";
 import {useRouter} from "next/navigation";
-import {useDisclosure} from "@chakra-ui/react-use-disclosure";
-import {useCollection} from "react-firebase-hooks/firestore";
-import {selectFirestore, setFirestore} from "../store/firestoreSlice";
 
 const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [repeatPassword, setRepeatPassword] = useState(' ');
-    const sFirestore = useSelector(selectFirestore)
     const dispatch = useDispatch();
     const router = useRouter()
     const toast = useToast()

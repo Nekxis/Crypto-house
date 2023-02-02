@@ -27,16 +27,14 @@ const CardComponent: React.FC<{ uuid: string, symbol: string, name: string, icon
     const dispatch = useDispatch()
     const sFirestore = useSelector(selectFirestore)
     const user = useSelector(selectUser);
-
     const toast = useToast()
-
     const reduxStore = sFirestore.theFirestore
     const starred = reduxStore?.filter((item: { uuid: string; }) => item.uuid === uuid)
-    useEffect(()=>{
+    useEffect(() => {
         if (starred?.length > 0) {
             setStar(true)
         }
-    },[sFirestore])
+    }, [sFirestore])
 
     const addFavoriteDocument = (uuid: string) => {
         dispatch(

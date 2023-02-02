@@ -19,17 +19,15 @@ import {
     auth,
     signInWithEmailAndPassword,
 } from '../firebase/clientApp';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {login} from '../store/userSlice';
 import {GitHubIcon} from "../src/loginComponents/IconProvider";
 import {PasswordField} from "../src/loginComponents/PasswordField";
 import {useRouter} from "next/navigation";
-import {selectFirestore} from "../store/firestoreSlice";
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const sFirestore = useSelector(selectFirestore)
     const dispatch = useDispatch();
     const router = useRouter()
 
@@ -119,4 +117,5 @@ const Login = () => {
         </>
     )
 }
+
 export default Login;

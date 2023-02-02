@@ -1,6 +1,4 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {popper} from "@popperjs/core";
-
 
 export const firestoreSlice = createSlice({
     name: 'store',
@@ -11,7 +9,6 @@ export const firestoreSlice = createSlice({
         setFirestore: (state, action) => {
             const newFirestore = action.payload
             state.theFirestore = newFirestore?.theFirestore.theFirestore
-            console.log(state.theFirestore, action.payload)
         },
         addItem: (state, action) => {
             // @ts-ignore
@@ -26,7 +23,6 @@ export const firestoreSlice = createSlice({
 
     },
 });
-
 
 export const {setFirestore, addItem, removeItem} = firestoreSlice.actions
 export const selectFirestore = (state: any) => state.theFirestore;

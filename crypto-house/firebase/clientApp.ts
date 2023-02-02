@@ -1,6 +1,6 @@
 import "firebase/auth";
 import "firebase/firestore";
-import { initializeApp} from 'firebase/app';
+import {initializeApp} from 'firebase/app';
 import {
     getAuth,
     createUserWithEmailAndPassword,
@@ -11,11 +11,10 @@ import {
 } from 'firebase/auth';
 import {
     getFirestore,
-    collection,
     setDoc,
-   onSnapshot,
     getDocs,
     query,
+    collection,
     doc,
     where,
 } from "firebase/firestore";
@@ -44,7 +43,6 @@ export {
     signOut,
     collection,
     setDoc,
-  onSnapshot,
     getDocs,
     query,
     doc,

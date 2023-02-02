@@ -11,7 +11,6 @@ import {selectFirestore, setFirestore} from "../store/firestoreSlice";
 
 export default function Home() {
     const [sv, setSv] = useState(false)
-    // const [db, setDb] = useState<string[]>([])
     const user = useSelector(selectUser)
     const sFirestore = useSelector(selectFirestore)
     const dispatch = useDispatch()
@@ -23,11 +22,9 @@ export default function Home() {
         const serverStore = await getDocs(q)
         if (serverStore) {
             serverStore.forEach((doc) => {
-                // setDb(doc.data().data);
                 db.push(doc.data().data)
             });
             if (db[0]) {
-
                 dispatch(
                     setFirestore({
                         theFirestore: db[0]
@@ -56,7 +53,6 @@ export default function Home() {
             dbPost()
                 .catch(console.error)
         }
-
     }, [sFirestore])
 
     useEffect(() => {
