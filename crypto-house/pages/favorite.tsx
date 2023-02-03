@@ -3,8 +3,8 @@ import Nav from "../src/nav/Nav";
 import {Box, Heading, SimpleGrid} from "@chakra-ui/react";
 import {useGetStatsByNameQuery} from "../store/apiSlice";
 import {useDispatch, useSelector} from "react-redux";
-import {setFirestore} from "../store/firestoreSlice";
-import {collection, getDocs, firestore, query, auth, where} from "../firebase/clientApp";
+import {selectFirestore, setFirestore} from "../store/firestoreSlice";
+import {collection, getDocs, firestore, query, auth, where, setDoc, doc} from "../firebase/clientApp";
 import CardComponent from "../src/cardComponent/CardComponent";
 import {login, logout, selectUser} from "../store/userSlice";
 import {onAuthStateChanged} from "firebase/auth";
@@ -12,7 +12,9 @@ import {coin} from "../Types";
 
 
 const Favorite = () => {
-    const [fav, setFav] = useState<string[]>([])
+    const [sv, setSv] = useState(false)
+    const [fav, setFav] = useState()
+    const sFirestore = useSelector(selectFirestore)
     const user = useSelector(selectUser)
     const {data} = useGetStatsByNameQuery()
     const dispatch = useDispatch()
@@ -28,7 +30,6 @@ const Favorite = () => {
                 db.push(doc.data().data)
             });
             if (db[0]) {
-                console.log("test", db, db[0])
                 dispatch(
                     setFirestore({
                         theFirestore: db[0]
@@ -37,11 +38,10 @@ const Favorite = () => {
             }
         }
         if (db[0] && apiData) {
-            const cleanDb = []
-            cleanDb.push(db[0])
-            setFav(cleanDb.map((item: string) => apiData.find((coin: coin) => item === coin.uuid)))
+            const cleanDb = db.map((item) => item.theFirestore)
+            setFav(cleanDb[0].map((item: { uuid: string }) => apiData.find((coin: coin) => item.uuid === coin.uuid)))
         }
-
+        setSv(true)
 
     }
 
@@ -51,6 +51,19 @@ const Favorite = () => {
                 .catch(console.error)
         }
     }, [])
+
+    useEffect(() => {
+        if (user !== null && sv) {
+            const dbPost = async () => {
+                await setDoc(doc(firestore, 'favorites', user.uid), {
+                    data: sFirestore, //data: sFirestore, -> sFirestore.theFirestore | remove data from db, simplify reducer
+                    user: user.uid
+                })
+            }
+            dbPost()
+                .catch(console.error)
+        }
+    }, [sFirestore])
 
     useEffect(() => {
         onAuthStateChanged(auth, (userAuth) => {
