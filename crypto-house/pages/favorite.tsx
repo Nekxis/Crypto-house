@@ -8,21 +8,19 @@ import {collection, getDocs, firestore, query, auth, where, setDoc, doc} from ".
 import CardComponent from "../src/cardComponent/CardComponent";
 import {login, logout, selectUser} from "../store/userSlice";
 import {onAuthStateChanged} from "firebase/auth";
-import {coin} from "../Types";
-
+import {coin, Firestore, uuid} from "../Types";
 
 const Favorite = () => {
     const [sv, setSv] = useState(false)
-    const [fav, setFav] = useState()
+    const [fav, setFav] = useState<(coin | undefined)[]>([])
     const sFirestore = useSelector(selectFirestore)
     const user = useSelector(selectUser)
     const {data} = useGetStatsByNameQuery()
     const dispatch = useDispatch()
-    const apiData = data?.data.coins
-
+    const apiData: coin[] | undefined = data?.data.coins
 
     const onPageLoad = async (user: string) => {
-        const db: string[] = []
+        const db: Firestore[] = []
         const q = query(collection(firestore, "favorites"), where('user', '==', user));
         const serverStore = await getDocs(q)
         if (serverStore) {
@@ -37,9 +35,10 @@ const Favorite = () => {
                 )
             }
         }
+
         if (db[0] && apiData) {
-            const cleanDb = db.map((item) => item.theFirestore)
-            setFav(cleanDb[0].map((item: { uuid: string }) => apiData.find((coin: coin) => item.uuid === coin.uuid)))
+            const cleanDb: uuid[][] = db.map((item: Firestore) => item.theFirestore)
+            setFav(cleanDb[0].map((item: uuid) => apiData.find((coin: coin) => item.uuid === coin.uuid)).filter(coin => coin !== undefined))
         }
         setSv(true)
 
@@ -88,9 +87,8 @@ const Favorite = () => {
             <Box m='1rem'>
                 <Heading size='lg' py='2'>Favorite Crypto</Heading>
                 <SimpleGrid columns={{md: 2, sm: 1}} spacing={5}>
-                    {fav?.map(({uuid, symbol, name, iconUrl, price, change, sparkline}) => {
-                        return <CardComponent key={uuid} uuid={uuid} symbol={symbol} name={name}
-                                              iconUrl={iconUrl}
+                    {fav && fav.map(({uuid, symbol, name, iconUrl, price, change, sparkline}) => {
+                        return <CardComponent key={uuid} uuid={uuid} symbol={symbol} name={name} iconUrl={iconUrl}
                                               price={price} change={change} sparkline={sparkline}/>
                     })}
                 </SimpleGrid>
