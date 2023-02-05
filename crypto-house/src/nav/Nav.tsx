@@ -19,8 +19,8 @@ const Nav = () => {
                 )}
             </Center>
             <Spacer/>
-            <Center w={{md: '30rem', sm: '100%'}}>
-                <Text color='purple.500' fontSize={{md: '5xl', sm: '3xl'}} fontWeight='700'>Crypto House</Text>
+            <Center w={{base: "30%", md: '30rem'}}>
+                <Text color='purple.500' fontSize={{ base: '22px', md: '5xl' }} textAlign='center' fontWeight='700'>Crypto House</Text>
             </Center>
             <Spacer/>
             <Center w='7rem'>
@@ -28,6 +28,7 @@ const Nav = () => {
             </Center>
         </Flex>
     )
+    // {{md: '5xl', sm: '3xl'}}
 }
 
 export default Nav;
