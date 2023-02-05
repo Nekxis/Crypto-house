@@ -87,7 +87,9 @@ const Favorite = () => {
             <Box m='1rem'>
                 <Heading size='lg' py='2'>Favorite Crypto</Heading>
                 <SimpleGrid columns={{md: 2, sm: 1}} spacing={5}>
-                    {fav && fav.map(({uuid, symbol, name, iconUrl, price, change, sparkline}) => {
+                    {
+                        // @ts-ignore
+                        fav.length >= 0 && fav.map(({uuid, symbol, name, iconUrl, price, change, sparkline}) => {
                         return <CardComponent key={uuid} uuid={uuid} symbol={symbol} name={name} iconUrl={iconUrl}
                                               price={price} change={change} sparkline={sparkline}/>
                     })}
