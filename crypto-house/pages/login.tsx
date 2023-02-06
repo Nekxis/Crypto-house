@@ -18,6 +18,8 @@ import React, {useState} from 'react';
 import {
     auth,
     signInWithEmailAndPassword,
+    GithubAuthProvider,
+    signInWithPopup,
 } from '../firebase/clientApp';
 import {useDispatch} from 'react-redux';
 import {login} from '../store/userSlice';
@@ -30,6 +32,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const dispatch = useDispatch();
     const router = useRouter()
+    const provider = new GithubAuthProvider()
 
     const loginToApp = (e: React.FormEvent) => {
         e.preventDefault();
@@ -42,7 +45,6 @@ const Login = () => {
                         uid: userAuth.user.uid,
                     })
                 );
-                console.log(userAuth)
                 router.push('/')
             })
             .catch((err) => {
@@ -50,6 +52,25 @@ const Login = () => {
             });
 
     };
+
+    const loginByGit = (e: React.FormEvent) => {
+        e.preventDefault();
+        signInWithPopup(auth, provider)
+            .then((userAuth) => {
+                dispatch(
+                    login({
+                        email: userAuth.user.email,
+                        uid: userAuth.user.uid,
+                    })
+                );
+                router.push('/')
+            })
+            .catch((err) => {
+                alert(err)
+        });
+
+
+    }
 
     return (
         <>
@@ -105,7 +126,7 @@ const Login = () => {
                                     </Text>
                                     <Divider/>
                                 </HStack>
-                                <Button width="full">
+                                <Button onClick={loginByGit} width="full">
                                     <VisuallyHidden>Sign in with GitHub</VisuallyHidden>
                                     <GitHubIcon/>
                                 </Button>

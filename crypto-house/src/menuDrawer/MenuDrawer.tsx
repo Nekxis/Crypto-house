@@ -12,12 +12,13 @@ import {
     useDisclosure
 } from '@chakra-ui/react'
 import {HamburgerIcon} from "@chakra-ui/icons";
-import {useSelector} from "react-redux";
-import {selectUser} from "../../store/userSlice";
+import {useDispatch, useSelector} from "react-redux";
+import {logout, selectUser} from "../../store/userSlice";
 import {useRouter} from "next/router";
 
 
 const MenuDrawer = () => {
+    const dispatch = useDispatch();
     const user = useSelector(selectUser);
     const {isOpen, onOpen, onClose} = useDisclosure()
     const btnRef = React.useRef<any>()
@@ -51,7 +52,7 @@ const MenuDrawer = () => {
                             </>
                         )}
                     </DrawerBody>
-                    {!user && (
+                    {!user ? (
                         <DrawerFooter display='flex' flexDirection='column'>
 
                             <Button onClick={() => router.push('/login')} variant='ghost' w='100%' justifyContent='left'
@@ -63,6 +64,14 @@ const MenuDrawer = () => {
                                     my={1}>Register</Button>
 
                         </DrawerFooter>
+                    ):(
+                        <DrawerFooter display='flex' flexDirection='column'>
+                        <Divider/>
+                        <Button onClick={() => dispatch(logout())} variant='ghost' w='100%'
+                                justifyContent='left' size='sm' py={1}
+                                my={1}>Log out</Button>
+
+                    </DrawerFooter>
                     )}
                 </DrawerContent>
             </Drawer>

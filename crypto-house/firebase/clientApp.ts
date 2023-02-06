@@ -7,7 +7,9 @@ import {
     updateProfile,
     onAuthStateChanged,
     signInWithEmailAndPassword,
-    signOut
+    signOut,
+    signInWithPopup,
+    GithubAuthProvider
 } from 'firebase/auth';
 import {
     getFirestore,
@@ -47,5 +49,7 @@ export {
     query,
     doc,
     where,
+    signInWithPopup,
+    GithubAuthProvider,
 }
 

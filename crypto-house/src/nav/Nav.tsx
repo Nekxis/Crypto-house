@@ -15,7 +15,7 @@ const Nav = () => {
             }} w='7rem' display='flex' flexFlow='column'>
                 <Avatar/>
                 {user && (
-                    <Heading size='xs'>{user.email}</Heading>
+                    <Heading noOfLines={[1]} maxWidth='24' size='xs'>{user.email}</Heading>
                 )}
             </Center>
             <Spacer/>
