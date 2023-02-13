@@ -36,12 +36,10 @@ const Favorite = () => {
             }
         }
 
-        if (db[0] && apiData) {
-            const cleanDb: uuid[][] = db.map((item: Firestore) => item.theFirestore)
-            setFav(cleanDb[0].map((item: uuid) => apiData.find((coin: coin) => item.uuid === coin.uuid)).filter(coin => coin !== undefined))
-        }
-        setSv(true)
 
+        const cleanDb: uuid[][] = db.map((item: Firestore) => item.theFirestore)
+        setFav(cleanDb[0].map((item: uuid) => apiData?.find((coin: coin) => item.uuid === coin.uuid)).filter(coin => coin !== undefined))
+        setSv(true)
     }
 
     useEffect(() => {
@@ -49,7 +47,7 @@ const Favorite = () => {
             onPageLoad(user.uid)
                 .catch(console.error)
         }
-    }, [])
+    }, [user])
 
     useEffect(() => {
         if (user !== null && sv) {
@@ -90,9 +88,9 @@ const Favorite = () => {
                     {
                         // @ts-ignore
                         fav.length >= 0 && fav.map(({uuid, symbol, name, iconUrl, price, change, sparkline}) => {
-                        return <CardComponent key={uuid} uuid={uuid} symbol={symbol} name={name} iconUrl={iconUrl}
-                                              price={price} change={change} sparkline={sparkline}/>
-                    })}
+                            return <CardComponent key={uuid} uuid={uuid} symbol={symbol} name={name} iconUrl={iconUrl}
+                                                  price={price} change={change} sparkline={sparkline}/>
+                        })}
                 </SimpleGrid>
             </Box>
         </>

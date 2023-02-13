@@ -66,7 +66,7 @@ export default function Home() {
                         photoUrl: userAuth.photoURL,
                     })
                 );
-                onPageLoad(userAuth.uid) //need check
+                onPageLoad(userAuth.uid)
             } else {
                 dispatch(logout());
             }
