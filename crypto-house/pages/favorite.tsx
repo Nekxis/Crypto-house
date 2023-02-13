@@ -55,7 +55,7 @@ const Favorite = () => {
         if (user !== null && sv) {
             const dbPost = async () => {
                 await setDoc(doc(firestore, 'favorites', user.uid), {
-                    data: sFirestore, //data: sFirestore, -> sFirestore.theFirestore | remove data from db, simplify reducer
+                    data: sFirestore,
                     user: user.uid
                 })
             }
