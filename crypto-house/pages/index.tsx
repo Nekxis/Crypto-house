@@ -1,18 +1,18 @@
 import React, {useEffect, useState} from "react";
-import Nav from "../src/nav/Nav";
-import {useGetStatsByNameQuery} from "../store/apiSlice";
-import CardComponent from "../src/cardComponent/CardComponent";
+import {useDispatch, useSelector} from "react-redux";
 import {Box, Heading, SimpleGrid} from "@chakra-ui/react";
 import {onAuthStateChanged} from "firebase/auth";
 import {auth, collection, doc, firestore, getDocs, query, setDoc, where} from "../firebase/clientApp";
-import {login, logout, selectUser} from "../store/userSlice";
-import {useDispatch, useSelector} from "react-redux";
 import {selectFirestore, setFirestore} from "../store/firestoreSlice";
+import {useGetStatsByNameQuery} from "../store/apiSlice";
+import {login, logout, selectUser} from "../store/userSlice";
+import CardComponent from "../src/cardComponent/CardComponent";
+import Nav from "../src/nav/Nav";
 
 export default function Home() {
-    const [sv, setSv] = useState(false)
+    const [overrideProtection, setOverrideProtection] = useState(false)
     const user = useSelector(selectUser)
-    const sFirestore = useSelector(selectFirestore)
+    const firestoreDataStore = useSelector(selectFirestore)
     const dispatch = useDispatch()
     const {data} = useGetStatsByNameQuery()
 
@@ -31,7 +31,7 @@ export default function Home() {
                     })
                 )
             }
-            setSv(true)
+            setOverrideProtection(true)
         }
     }
 
@@ -43,17 +43,17 @@ export default function Home() {
     }, [])
 
     useEffect(() => {
-        if (user !== null && sv) {
+        if (user !== null && overrideProtection) {
             const dbPost = async () => {
                 await setDoc(doc(firestore, 'favorites', user.uid), {
-                    data: sFirestore, //data: sFirestore, -> sFirestore.theFirestore | remove data from db, simplify reducer
+                    data: firestoreDataStore,
                     user: user.uid
                 })
             }
             dbPost()
                 .catch(console.error)
         }
-    }, [sFirestore])
+    }, [firestoreDataStore])
 
     useEffect(() => {
         onAuthStateChanged(auth, (userAuth) => {

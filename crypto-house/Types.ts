@@ -28,7 +28,7 @@ export type coin = {
 }
 
 export type Firestore = {
-   theFirestore: uuid[]
+    theFirestore: uuid[]
 }
 
 export type uuid = {

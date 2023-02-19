@@ -1,3 +1,12 @@
+import React, {useState} from 'react';
+import {useDispatch} from 'react-redux';
+import {useRouter} from "next/navigation";
+import {
+    auth,
+    signInWithEmailAndPassword,
+    GithubAuthProvider,
+    signInWithPopup,
+} from '../firebase/clientApp';
 import {
     Box,
     Button, CloseButton,
@@ -14,18 +23,9 @@ import {
     useColorModeValue,
     VisuallyHidden,
 } from '@chakra-ui/react'
-import React, {useState} from 'react';
-import {
-    auth,
-    signInWithEmailAndPassword,
-    GithubAuthProvider,
-    signInWithPopup,
-} from '../firebase/clientApp';
-import {useDispatch} from 'react-redux';
 import {login} from '../store/userSlice';
 import {GitHubIcon} from "../src/loginComponents/IconProvider";
 import {PasswordField} from "../src/loginComponents/PasswordField";
-import {useRouter} from "next/navigation";
 
 const Login = () => {
     const [email, setEmail] = useState('');

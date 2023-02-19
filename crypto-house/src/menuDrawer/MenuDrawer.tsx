@@ -1,4 +1,6 @@
 import React from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {useRouter} from "next/router";
 import {
     Drawer,
     DrawerBody,
@@ -12,9 +14,7 @@ import {
     useDisclosure
 } from '@chakra-ui/react'
 import {HamburgerIcon} from "@chakra-ui/icons";
-import {useDispatch, useSelector} from "react-redux";
 import {logout, selectUser} from "../../store/userSlice";
-import {useRouter} from "next/router";
 
 
 const MenuDrawer = () => {
@@ -46,7 +46,7 @@ const MenuDrawer = () => {
                         <Divider/>
                         {user && (
                             <>
-                                <Button  variant='ghost' w='100%' justifyContent='left' size='sm' py={1}
+                                <Button variant='ghost' w='100%' justifyContent='left' size='sm' py={1}
                                         my={1} onClick={() => router.push('/favorite')}>Favorites</Button>
                                 <Divider/>
                             </>
@@ -64,14 +64,14 @@ const MenuDrawer = () => {
                                     my={1}>Register</Button>
 
                         </DrawerFooter>
-                    ):(
+                    ) : (
                         <DrawerFooter display='flex' flexDirection='column'>
-                        <Divider/>
-                        <Button onClick={() => dispatch(logout())} variant='ghost' w='100%'
-                                justifyContent='left' size='sm' py={1}
-                                my={1}>Log out</Button>
+                            <Divider/>
+                            <Button onClick={() => dispatch(logout())} variant='ghost' w='100%'
+                                    justifyContent='left' size='sm' py={1}
+                                    my={1}>Log out</Button>
 
-                    </DrawerFooter>
+                        </DrawerFooter>
                     )}
                 </DrawerContent>
             </Drawer>

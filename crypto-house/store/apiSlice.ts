@@ -12,4 +12,4 @@ export const coinApi = createApi({
     }),
 })
 
-export const { useGetStatsByNameQuery } = coinApi
+export const {useGetStatsByNameQuery} = coinApi

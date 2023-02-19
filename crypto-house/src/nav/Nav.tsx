@@ -1,3 +1,6 @@
+import React from "react";
+import {useDispatch, useSelector} from 'react-redux';
+import {useRouter} from "next/navigation";
 import {
     Flex,
     Center,
@@ -14,11 +17,8 @@ import {
     PopoverTrigger,
     Button, Divider
 } from '@chakra-ui/react'
-import React from "react";
-import {useDispatch, useSelector} from 'react-redux';
 import MenuDrawer from "../menuDrawer/MenuDrawer";
 import {logout, selectUser} from "../../store/userSlice";
-import {useRouter} from "next/navigation";
 
 const Nav = () => {
     const user = useSelector(selectUser);
@@ -27,18 +27,19 @@ const Nav = () => {
     return (
         <Flex h='5rem'>
             {user ? (
-                <Popover  placement='bottom-start'>
+                <Popover placement='bottom-start'>
                     <PopoverTrigger>
                         <Center w='7rem' display='flex' flexFlow='column'>
                             <Avatar/>
                             {user && (
-                                <Heading noOfLines={[1]} maxWidth='24' size='xs'>{user.email.substring(0, user.email.lastIndexOf("@"))}</Heading>
+                                <Heading noOfLines={[1]} maxWidth='24'
+                                         size='xs'>{user.email.substring(0, user.email.lastIndexOf("@"))}</Heading>
                             )}
                         </Center>
                     </PopoverTrigger>
                     <PopoverContent m='2'>
-                        <PopoverArrow />
-                        <PopoverCloseButton />
+                        <PopoverArrow/>
+                        <PopoverCloseButton/>
                         <PopoverHeader>Your account</PopoverHeader>
                         <PopoverBody px='4' py='0'>
                             {user && (
@@ -51,19 +52,20 @@ const Nav = () => {
                         </PopoverBody>
                     </PopoverContent>
                 </Popover>
-            ):(
+            ) : (
                 <Center onClick={() => {
-                !user ? (router.push('/login')) : (router.push('/'))
-            }} w='7rem' display='flex' flexFlow='column'>
-                <Avatar/>
-                {user && (
-                    <Heading noOfLines={[1]} maxWidth='24' size='xs'>{user.email}</Heading>
-                )}
-            </Center>)}
+                    !user ? (router.push('/login')) : (router.push('/'))
+                }} w='7rem' display='flex' flexFlow='column'>
+                    <Avatar/>
+                    {user && (
+                        <Heading noOfLines={[1]} maxWidth='24' size='xs'>{user.email}</Heading>
+                    )}
+                </Center>)}
 
             <Spacer/>
             <Center w={{base: "30%", md: '30rem'}}>
-                <Text color='purple.500' fontSize={{ base: '22px', md: '5xl' }} textAlign='center' fontWeight='700'>Crypto House</Text>
+                <Text color='purple.500' fontSize={{base: '22px', md: '5xl'}} textAlign='center' fontWeight='700'>Crypto
+                    House</Text>
             </Center>
             <Spacer/>
             <Center w='7rem'>

@@ -1,19 +1,19 @@
 import React, {useEffect, useState} from "react";
-import Nav from "../src/nav/Nav";
-import {Box, Heading, SimpleGrid} from "@chakra-ui/react";
-import {useGetStatsByNameQuery} from "../store/apiSlice";
 import {useDispatch, useSelector} from "react-redux";
-import {selectFirestore, setFirestore} from "../store/firestoreSlice";
+import {Box, Heading, SimpleGrid} from "@chakra-ui/react";
 import {collection, getDocs, firestore, query, auth, where, setDoc, doc} from "../firebase/clientApp";
-import CardComponent from "../src/cardComponent/CardComponent";
-import {login, logout, selectUser} from "../store/userSlice";
 import {onAuthStateChanged} from "firebase/auth";
+import {useGetStatsByNameQuery} from "../store/apiSlice";
+import {login, logout, selectUser} from "../store/userSlice";
+import {selectFirestore, setFirestore} from "../store/firestoreSlice";
+import CardComponent from "../src/cardComponent/CardComponent";
+import Nav from "../src/nav/Nav";
 import {coin, Firestore, uuid} from "../Types";
 
 const Favorite = () => {
-    const [sv, setSv] = useState(false)
+    const [overrideProtection, setOverrideProtection] = useState(false)
     const [fav, setFav] = useState<(coin | undefined)[]>([])
-    const sFirestore = useSelector(selectFirestore)
+    const firestoreDataStore = useSelector(selectFirestore)
     const user = useSelector(selectUser)
     const {data} = useGetStatsByNameQuery()
     const dispatch = useDispatch()
@@ -39,7 +39,7 @@ const Favorite = () => {
 
         const cleanDb: uuid[][] = db.map((item: Firestore) => item.theFirestore)
         setFav(cleanDb[0].map((item: uuid) => apiData?.find((coin: coin) => item.uuid === coin.uuid)).filter(coin => coin !== undefined))
-        setSv(true)
+        setOverrideProtection(true)
     }
 
     useEffect(() => {
@@ -50,17 +50,17 @@ const Favorite = () => {
     }, [user])
 
     useEffect(() => {
-        if (user !== null && sv) {
+        if (user !== null && overrideProtection) {
             const dbPost = async () => {
                 await setDoc(doc(firestore, 'favorites', user.uid), {
-                    data: sFirestore,
+                    data: firestoreDataStore,
                     user: user.uid
                 })
             }
             dbPost()
                 .catch(console.error)
         }
-    }, [sFirestore])
+    }, [firestoreDataStore])
 
     useEffect(() => {
         onAuthStateChanged(auth, (userAuth) => {
