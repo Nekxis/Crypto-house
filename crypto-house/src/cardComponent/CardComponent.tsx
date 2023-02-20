@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import {
     Card,
     CardHeader,
@@ -13,12 +14,11 @@ import {
     SimpleGrid,
     Center, IconButton,
 } from '@chakra-ui/react'
-// @ts-ignore
-import {Sparklines, SparklinesBars, SparklinesLine} from 'react-sparklines';
 import {StarIcon} from "@chakra-ui/icons";
-import {useDispatch, useSelector} from "react-redux";
 import {selectUser} from "../../store/userSlice";
 import {addItem, removeItem, selectFirestore} from "../../store/firestoreSlice";
+// @ts-ignore
+import {Sparklines, SparklinesBars, SparklinesLine} from 'react-sparklines';
 
 
 const CardComponent: React.FC<{ uuid: string, symbol: string, name: string, iconUrl: string, price: string, change: string, sparkline: string[] }> = (props) => {
@@ -44,6 +44,7 @@ const CardComponent: React.FC<{ uuid: string, symbol: string, name: string, icon
         )
         setStar(true)
     }
+
     const removeFavoriteDocument = (uuid: string) => {
         dispatch(
             removeItem({

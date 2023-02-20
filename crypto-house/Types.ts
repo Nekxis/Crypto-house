@@ -27,13 +27,32 @@ export type coin = {
     sparkline: string[]
 }
 
+export type FirestoreStore = {
+    theFirestore: Firestore
+}
+
 export type Firestore = {
-   theFirestore: uuid[]
+    theFirestore: uuid[]
 }
 
 export type uuid = {
     uuid: string
 }
+
+export type userStore = {
+    user: userObject
+}
+
+type userObject = {
+    user: userData
+}
+
+export type userData = {
+    uid: string;
+    name: string;
+    email: string;
+}
+
 
 
 

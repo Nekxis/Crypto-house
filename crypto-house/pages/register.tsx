@@ -1,3 +1,10 @@
+import React, {useState} from 'react'
+import {useDispatch} from 'react-redux';
+import {useRouter} from "next/navigation";
+import {
+    auth,
+    createUserWithEmailAndPassword,
+} from '../firebase/clientApp';
 import {
     Box,
     Button,
@@ -14,16 +21,9 @@ import {
     useColorModeValue, useToast,
     VisuallyHidden,
 } from '@chakra-ui/react'
-import {
-    auth,
-    createUserWithEmailAndPassword,
-} from '../firebase/clientApp';
-import React, {useState} from 'react'
-import {useDispatch} from 'react-redux';
 import {login} from '../store/userSlice';
 import {PasswordField} from "../src/loginComponents/PasswordField";
 import {GitHubIcon} from "../src/loginComponents/IconProvider";
-import {useRouter} from "next/navigation";
 
 const Register = () => {
     const [email, setEmail] = useState('');

@@ -1,5 +1,4 @@
-
-import { configureStore } from '@reduxjs/toolkit';
+import {configureStore} from '@reduxjs/toolkit';
 import {userSlice} from "./userSlice"
 import {coinApi} from "./apiSlice";
 import {firestoreSlice} from "./firestoreSlice";
