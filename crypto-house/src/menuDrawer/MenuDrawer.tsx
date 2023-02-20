@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react'
 import {HamburgerIcon} from "@chakra-ui/icons";
 import {logout, selectUser} from "../../store/userSlice";
+import {clearFirestore} from "../../store/firestoreSlice";
 
 const MenuDrawer = () => {
     const dispatch = useDispatch();
@@ -66,7 +67,10 @@ const MenuDrawer = () => {
                     ) : (
                         <DrawerFooter display='flex' flexDirection='column'>
                             <Divider/>
-                            <Button onClick={() => dispatch(logout())} variant='ghost' w='100%'
+                            <Button onClick={() => {
+                                dispatch(logout())
+                                dispatch(clearFirestore())
+                            }} variant='ghost' w='100%'
                                     justifyContent='left' size='sm' py={1}
                                     my={1}>Log out</Button>
 

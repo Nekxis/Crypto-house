@@ -20,6 +20,7 @@ import {
 import MenuDrawer from "../menuDrawer/MenuDrawer";
 import {logout, selectUser} from "../../store/userSlice";
 import {userData} from "../../Types";
+import {clearFirestore} from "../../store/firestoreSlice";
 
 const Nav = () => {
     const user: userData = useSelector(selectUser);
@@ -32,7 +33,7 @@ const Nav = () => {
                 <Popover placement='bottom-start'>
                     <PopoverTrigger>
                         <Center w='7rem' display='flex' flexFlow='column'>
-                            <Avatar/>
+                            <Avatar _hover={{boxShadow: "lg"}} />
                             {user && (
                                 <Heading noOfLines={[1]} maxWidth='24'
                                          size='xs'>{user.email?.substring(0, user.email?.lastIndexOf("@"))}</Heading>
@@ -48,7 +49,10 @@ const Nav = () => {
                                 <Text my='2'> Email: {user.email}</Text>
                             )}
                             <Divider/>
-                            <Button onClick={() => dispatch(logout())} variant='solid' w='33%'
+                            <Button onClick={() => {
+                                dispatch(logout())
+                                dispatch(clearFirestore())
+                            }} variant='solid' w='33%'
                                     size='sm' py={1}
                                     my='2'>Log out</Button>
                         </PopoverBody>
@@ -58,7 +62,7 @@ const Nav = () => {
                 <Center onClick={() => {
                     !user ? (router.push('/login')) : (router.push('/'))
                 }} w='7rem' display='flex' flexFlow='column'>
-                    <Avatar/>
+                    <Avatar _hover={{boxShadow: "lg"}} />
                     {user && (
                         // @ts-ignore
                         <Heading noOfLines={[1]} maxWidth='24' size='xs'>{user.email}</Heading>

@@ -11,6 +11,9 @@ export const firestoreSlice = createSlice({
             const newFirestore = action.payload
             state.theFirestore = newFirestore?.theFirestore.theFirestore
         },
+        clearFirestore: (state) => {
+            state.theFirestore = []
+        },
         addItem: (state, action) => {
             // @ts-ignore
             state.theFirestore.push(action.payload)
@@ -25,7 +28,7 @@ export const firestoreSlice = createSlice({
     },
 });
 
-export const {setFirestore, addItem, removeItem} = firestoreSlice.actions
+export const {setFirestore, clearFirestore, addItem, removeItem} = firestoreSlice.actions
 export const selectFirestore = (state: FirestoreStore) => state.theFirestore;
 
 
