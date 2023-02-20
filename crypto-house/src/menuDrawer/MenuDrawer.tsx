@@ -11,17 +11,16 @@ import {
     DrawerCloseButton,
     Button,
     Divider,
-    useDisclosure
+    useDisclosure,
 } from '@chakra-ui/react'
 import {HamburgerIcon} from "@chakra-ui/icons";
 import {logout, selectUser} from "../../store/userSlice";
-
 
 const MenuDrawer = () => {
     const dispatch = useDispatch();
     const user = useSelector(selectUser);
     const {isOpen, onOpen, onClose} = useDisclosure()
-    const btnRef = React.useRef<any>()
+    const btnRef = React.useRef<HTMLButtonElement>(null)
     const router = useRouter()
 
     return (

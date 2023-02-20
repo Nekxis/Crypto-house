@@ -19,11 +19,13 @@ import {
 } from '@chakra-ui/react'
 import MenuDrawer from "../menuDrawer/MenuDrawer";
 import {logout, selectUser} from "../../store/userSlice";
+import {userData} from "../../Types";
 
 const Nav = () => {
-    const user = useSelector(selectUser);
+    const user: userData = useSelector(selectUser);
     const router = useRouter()
     const dispatch = useDispatch()
+
     return (
         <Flex h='5rem'>
             {user ? (
@@ -33,7 +35,7 @@ const Nav = () => {
                             <Avatar/>
                             {user && (
                                 <Heading noOfLines={[1]} maxWidth='24'
-                                         size='xs'>{user.email.substring(0, user.email.lastIndexOf("@"))}</Heading>
+                                         size='xs'>{user.email?.substring(0, user.email?.lastIndexOf("@"))}</Heading>
                             )}
                         </Center>
                     </PopoverTrigger>
@@ -58,6 +60,7 @@ const Nav = () => {
                 }} w='7rem' display='flex' flexFlow='column'>
                     <Avatar/>
                     {user && (
+                        // @ts-ignore
                         <Heading noOfLines={[1]} maxWidth='24' size='xs'>{user.email}</Heading>
                     )}
                 </Center>)}

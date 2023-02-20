@@ -1,4 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
+import {FirestoreStore} from "../Types";
 
 export const firestoreSlice = createSlice({
     name: 'store',
@@ -25,6 +26,6 @@ export const firestoreSlice = createSlice({
 });
 
 export const {setFirestore, addItem, removeItem} = firestoreSlice.actions
-export const selectFirestore = (state: any) => state.theFirestore;
+export const selectFirestore = (state: FirestoreStore) => state.theFirestore;
 
 
