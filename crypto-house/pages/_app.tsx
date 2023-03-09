@@ -1,4 +1,4 @@
-import React, {StrictMode} from 'react';
+import React from 'react';
 import {Provider} from "react-redux";
 import '../styles/globals.css'
 import {ChakraProvider} from '@chakra-ui/react'
